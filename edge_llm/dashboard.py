@@ -100,9 +100,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
   .switch-btn .name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .switch-btn .desc { font-size: 10px; color: var(--muted); }
   .switch-btn .cost { font-size: 10px; color: var(--yellow); margin-top: 4px; }
-  .switch-btn.loading {
-    opacity: 0.6; pointer-events: none;
+  .switch-btn.loading { opacity: 0.6; pointer-events: none; }
+  .danger-btn {
+    background: var(--card); border: 1px solid var(--red); border-radius: 10px;
+    padding: 14px 12px; cursor: pointer; color: var(--red);
+    transition: all 0.2s; text-align: center; font-size: 13px; font-weight: 600;
   }
+  .danger-btn:hover { background: rgba(239,68,68,0.1); }
+  .controls { margin-bottom: 24px; display: flex; gap: 10px; }
   .history { margin-top: 24px; }
   .history h3 {
     font-size: 12px; text-transform: uppercase;
@@ -168,6 +173,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
   <div class="switcher">
     <h3>切换 Profile</h3>
     <div class="switch-grid" id="switchGrid"></div>
+  </div>
+
+  <div class="controls">
+    <button class="danger-btn" onclick="doReset()">🔄 Reset (Idle)</button>
+    <button class="danger-btn" onclick="doReconcile()" style="border-color:var(--yellow);color:var(--yellow)">🔍 Reconcile</button>
   </div>
 
   <div class="history">
@@ -266,6 +276,32 @@ async function doSwitch(name) {
   }
   switching = false;
   document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('loading'));
+}
+
+async function doReset() {
+  if (!confirm('Force reset to idle? This kills all services.')) return;
+  const result = await fetchJSON('/reset', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({profile: 'idle'})
+  });
+  showToast(result.status === 'reset' ? '✅ Reset OK' : '❌ ' + (result.message || 'fail'), result.status === 'reset' ? 'success' : 'error');
+  refresh();
+}
+
+async function doReconcile() {
+  const result = await fetchJSON('/reconcile', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({})
+  });
+  const actions = result.actions || [];
+  if (actions.length === 0) {
+    showToast('✅ State consistent', 'success');
+  } else {
+    showToast('🔧 Fixed: ' + actions.join('; '), 'success');
+  }
+  refresh();
 }
 
 async function refresh() {

@@ -12,6 +12,36 @@
 
 set -euo pipefail
 
+# ─── EdgeLLM Integration ────────────────────────────────────
+# Check GPU lock (flock-based). If another process is switching, refuse.
+LOCK_FILE="/tmp/edge_llm_gpu.lock"
+STATE_DB="$HOME/.edge_llm/state.db"
+
+check_gpu_lock() {
+    if [ -f "$LOCK_FILE" ]; then
+        # Try to acquire lock non-blockingly with flock
+        if ! flock -n 9 2>/dev/null; then
+            echo "❌ GPU lock held by another process. Use 'edge-llm reconcile' or:"
+            echo "   rm -f $LOCK_FILE"
+            exit 1
+        fi
+    fi
+    # Lock acquired (or no lock file) — proceed
+}
+
+update_state_db() {
+    local profile="$1"
+    if [ -f "$STATE_DB" ]; then
+        sqlite3 "$STATE_DB" "INSERT OR REPLACE INTO state VALUES ('current_profile', '$profile');" 2>/dev/null || true
+        sqlite3 "$STATE_DB" "INSERT OR REPLACE INTO state VALUES ('profile_state', 'healthy');" 2>/dev/null || true
+        sqlite3 "$STATE_DB" "INSERT OR REPLACE INTO state VALUES ('vllm_pid', '');" 2>/dev/null || true
+    fi
+}
+
+# Open lock file descriptor for flock
+exec 9<>"$LOCK_FILE" 2>/dev/null || true
+check_gpu_lock
+
 MODEL="${1:-}"
 CONTEXT_LEN="${2:-}"
 PORT_QWEN=8000
@@ -147,9 +177,15 @@ case "$MODEL" in
         pkill -9 -f "vllm.*8002" 2>/dev/null || true
         sleep 1
         rm -f "$LOG_DIR"/*.pid
-        # Clean edge-llm lock file
+        # Clean edge-llm state
         rm -f /tmp/edge_llm_gpu.lock
+        if [ -f "$STATE_DB" ]; then
+            sqlite3 "$STATE_DB" "INSERT OR REPLACE INTO state VALUES ('current_profile', 'idle');" 2>/dev/null || true
+            sqlite3 "$STATE_DB" "INSERT OR REPLACE INTO state VALUES ('profile_state', 'idle');" 2>/dev/null || true
+            sqlite3 "$STATE_DB" "INSERT OR REPLACE INTO state VALUES ('vllm_pid', '');" 2>/dev/null || true
+        fi
         echo "  Done. GPU free: $(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1) MB"
+        exec 9>&- 2>/dev/null || true
         exit 0
         ;;
 
@@ -195,6 +231,14 @@ while [ $WAITED -lt $MAX_WAIT ]; do
     fi
     if curl -s --connect-timeout 2 "http://localhost:$PORT/v1/models" > /dev/null 2>&1; then
         echo "  ✅ Server ready on :$PORT ($(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | head -1) MB VRAM)"
+        # Update state DB so edge-llm knows about this
+        case "$MODEL" in
+            qw36) update_state_db "qw36_full" ;;
+            qw35) update_state_db "qw35_comfyui" ;;
+            gemma) update_state_db "gemma_full" ;;
+        esac
+        # Release lock
+        exec 9>&- 2>/dev/null || true
         exit 0
     fi
     sleep 5

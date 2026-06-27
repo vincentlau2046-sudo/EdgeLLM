@@ -68,9 +68,11 @@ c.execute('CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, value TEXT)')
 c.execute('''CREATE TABLE IF NOT EXISTS history (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
-    from_profile TEXT, to_profile TEXT, duration REAL
+    from_profile TEXT, to_profile TEXT, duration REAL, status TEXT
 )''')
 c.execute("INSERT OR REPLACE INTO state VALUES ('current_profile', 'idle')")
+c.execute("INSERT OR REPLACE INTO state VALUES ('profile_state', 'idle')")
+c.execute("INSERT OR REPLACE INTO state VALUES ('vllm_pid', '')")
 c.commit()
 c.close()
 PYEOF

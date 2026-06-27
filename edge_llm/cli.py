@@ -14,7 +14,7 @@ Usage:
 import sys
 import json
 import logging
-import time
+import datetime
 from pathlib import Path
 
 # Bootstrap logging
@@ -26,14 +26,21 @@ log = logging.getLogger("edge_llm.cli")
 
 # Add parent to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from edge_llm.profile_manager import ProfileManager, DEFAULT_PROFILES, DEFAULT_STATE_DB
+from edge_llm.profile_manager import ProfileManager, ProfileState
 
 
 def cmd_status():
     mgr = ProfileManager()
     s = mgr.status()
+    state_label = {
+        ProfileState.HEALTHY: "🟢 healthy",
+        ProfileState.SWITCHING: "🔄 switching",
+        ProfileState.IDLE: "⚪ idle",
+        ProfileState.ERROR: "🔴 error",
+    }.get(s.get("state", ""), s.get("state", "?"))
     print(f"Profile : {s['profile']} ({s['description']})")
-    print(f"vLLM    : {s['vllm']}")
+    print(f"State   : {state_label}")
+    print(f"vLLM    : {s['vllm']}  (PID: {s.get('vllm_pid', '-') or '-'})")
     print(f"ComfyUI : {s['comfyui']}")
     print(f"GPU     : {s['gpu_used_mb']}/{s['gpu_total_mb']} MiB used")
 
@@ -86,18 +93,18 @@ def cmd_switch(args):
 
 def cmd_history(args):
     mgr = ProfileManager()
-    history = mgr.state.get_history(limit=20)
+    history = mgr.state.get_history(limit=30)
     if not history:
         print("No switch history.")
         return
     print(f"\nSwitch History (last {len(history)} entries):")
-    print(f"{'#':<4} {'from':<15} {'to':<15} {'cost':<8} {'time'}")
-    print("-" * 70)
+    print(f"{'#':<4} {'from':<15} {'to':<15} {'cost':<8} {'status':<8} {'time'}")
+    print("-" * 80)
     for i, h in enumerate(history):
-        import datetime
         ts = datetime.datetime.fromisoformat(h["timestamp"])
         dur = f"{h['duration']:.1f}s" if h["duration"] else "-"
-        print(f"{i+1:<4} {h['from']:<15} {h['to']:<15} {dur:<8} {ts.strftime('%Y-%m-%d %H:%M:%S')}")
+        status = h.get("status", "?")
+        print(f"{i+1:<4} {h['from']:<15} {h['to']:<15} {dur:<8} {status:<8} {ts.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
 def cmd_reset(args):
@@ -111,7 +118,7 @@ def cmd_reset(args):
     if result["status"] == "reset":
         print(f"✅ Reset to '{target}'")
         if not result["gpu_free"]:
-            print(f"⚠️ WARNING: GPU still has {mgr.gpu_used_mb()} MB used — orphan CUDA context likely")
+            print(f"⚠️ WARNING: GPU still has {gpu_used_mb()} MB used — orphan CUDA context likely")
             print(f"   May need 'nvidia-smi --gpu-reset' or reboot")
     else:
         print(f"❌ Reset failed")
@@ -124,9 +131,13 @@ def cmd_reconcile(args):
     result = mgr.reconcile()
 
     print("State Reconciliation:")
-    print(f"  DB profile : {result['db_profile']}")
+    print(f"  DB profile : {result['db_profile']} (state: {result.get('db_state', '?')})")
     print(f"  Actual     : {result['actual_profile']}")
     print(f"  ComfyUI    : {'✅' if result['comfyui_alive'] else '❌'}")
+    if result.get("actual_states"):
+        print(f"  Port scan  :")
+        for name, state in result["actual_states"].items():
+            print(f"    {name}: {state}")
     if result["actions"]:
         print("\n  Actions taken:")
         for a in result["actions"]:

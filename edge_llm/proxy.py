@@ -7,6 +7,13 @@ Sits between OpenClaw and vLLM:
 3. Auto-switches profile if needed
 4. Forwards to the correct vLLM instance
 5. Serves web dashboard at /
+
+v3.0 changes:
+  - ThreadingHTTPServer (no more single-thread blocking)
+  - Fixed non-streaming proxy bug (double read)
+  - Uses dashboard.py HTML (not inline fallback)
+  - Adapted to new ProfileManager API (profile_state, vllm_pid)
+  - Health check logs only, never auto-restarts
 """
 
 import sys
@@ -16,12 +23,13 @@ import logging
 import urllib.request
 import json
 import http.server
+import socketserver
 import threading
 import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from edge_llm.profile_manager import ProfileManager
+from edge_llm.profile_manager import ProfileManager, ProfileState
 
 log = logging.getLogger("edge_llm.proxy")
 
@@ -42,8 +50,7 @@ class ProxyManager:
         self.mgr = ProfileManager()
         self._last_switch = 0.0
         self._cooldown = 10  # min seconds between switches
-        self._health_failures = 0
-        self._max_health_retries = 5
+        self._switch_lock = threading.Lock()
 
     @property
     def current(self) -> str:
@@ -58,15 +65,22 @@ class ProxyManager:
         return model_map.get(model_name)
 
     def ensure_profile(self, target: str) -> bool:
+        """Thread-safe profile switching with cooldown."""
         if self.current == target:
             return True
-        if time.time() - self._last_switch < self._cooldown:
-            log.warning("Switch cooldown active, skipping")
+        if not self._switch_lock.acquire(blocking=False):
+            log.warning("Switch already in progress, skipping")
             return False
-        log.info("Auto-switch: %s → %s", self.current, target)
-        result = self.mgr.switch(target)
-        self._last_switch = time.time()
-        return result["status"] == "switched"
+        try:
+            if time.time() - self._last_switch < self._cooldown:
+                log.warning("Switch cooldown active, skipping")
+                return False
+            log.info("Auto-switch: %s → %s", self.current, target)
+            result = self.mgr.switch(target)
+            self._last_switch = time.time()
+            return result["status"] == "switched"
+        finally:
+            self._switch_lock.release()
 
     def get_target_port(self, model_name: str):
         for name, p in self.mgr._profiles.items():
@@ -81,14 +95,13 @@ class ProxyManager:
         Use `edge-llm switch <profile>` or `edge-llm reconcile` manually instead."""
         try:
             s = self.mgr.status()
-            log.info("Health check: profile=%s vllm=%s comfyui=%s",
-                     s["profile"], s["vllm"], s["comfyui"])
-            # NO auto-restart — too dangerous. Only log.
+            log.info("Health check: profile=%s state=%s vllm=%s comfyui=%s",
+                     s["profile"], s.get("state", "?"), s["vllm"], s["comfyui"])
             p = self.mgr._profiles.get(s["profile"])
-            if p and p.vllm and s["vllm"] == "❌":
-                log.warning("vLLM unhealthy in %s — use `edge-llm switch` or `edge-llm reconcile` to fix", s["profile"])
-            if p and p.comfyui and s["comfyui"] == "❌":
-                log.warning("ComfyUI unhealthy in %s — use `edge-llm switch` or `edge-llm reconcile` to fix", s["profile"])
+            if p and p.vllm and s["vllm"] == "❌" and s.get("state") == ProfileState.HEALTHY:
+                log.warning("vLLM unhealthy but state=healthy — use `edge-llm reconcile` to fix")
+            if p and p.comfyui and s["comfyui"] == "❌" and s.get("state") == ProfileState.HEALTHY:
+                log.warning("ComfyUI unhealthy but state=healthy — use `edge-llm reconcile` to fix")
         except Exception as e:
             log.error("Health check exception: %s", e)
 
@@ -98,7 +111,7 @@ class ProxyManager:
 class ProxyHandler(http.server.BaseHTTPRequestHandler):
 
     def log_message(self, fmt, *args):
-        log.debug(f"[proxy] {fmt}", *args)
+        log.debug("[proxy] " + fmt, *args)
 
     @property
     def proxy(self):
@@ -125,7 +138,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         elif self.path == "/system":
             self._send_json(self._system_info())
         elif self.path == "/history":
-            self._send_json(pm.mgr.state.get_history(limit=20))
+            self._send_json(pm.mgr.state.get_history(limit=30))
         else:
             self._send_json({"error": "not found"}, 404)
 
@@ -143,65 +156,37 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             self._send_json({"error": "not found"}, 404)
 
     def _serve_dashboard(self):
+        """Serve dashboard HTML. Priority: static/index.html > dashboard.py > minimal fallback."""
+        # Try static/index.html first
         static_dir = Path(__file__).parent / "static"
         dashboard = static_dir / "index.html"
+        body = None
+
         if dashboard.exists():
             body = dashboard.read_bytes()
-        else:
-                        # Fallback inline dashboard (ASCII-only, .encode for bytes)
-            fallback_html = (
-                "<!DOCTYPE html>"
-                "<html><head><title>EdgeLLM Dashboard</title>"
+
+        # Try dashboard.py
+        if body is None:
+            try:
+                from edge_llm.dashboard import DASHBOARD_HTML
+                body = DASHBOARD_HTML.encode("utf-8")
+            except ImportError:
+                pass
+
+        # Minimal fallback
+        if body is None:
+            body = (
+                "<!DOCTYPE html><html><head><title>EdgeLLM</title>"
                 "<style>body{font-family:sans-serif;background:#0f1117;color:#e2e8f0;padding:24px}"
-                "h1{color:#3b82f6}button{padding:8px 16px;margin:4px;background:#1a1d27;color:#e2e8f0;border:1px solid #2a2d3a;border-radius:6px;cursor:pointer}button:hover{border-color:#3b82f6}"
-                "</style></head><body>"
-                "<h1>EdgeLLM Dashboard</h1>"
-                "<div id='status'>Loading...</div>"
-                "<div id='controls'></div>"
-                "<script>"
-                "const API='';"
-                "async function refresh(){"
-                "  const s=await (await fetch(API+'/status')).json();"
-                "  document.getElementById('status').innerHTML="
-                "    'Profile: <b>'+s.profile+'</b><br>vLLM: '+s.vllm+'<br>ComfyUI: '+s.comfyui+"
-                "    '<br>GPU: '+s.gpu_used_mb+'/'+s.gpu_total_mb+' MB';"
-                "  const ps=await (await fetch(API+'/profiles')).json();"
-                "  const c=document.getElementById('controls');"
-                "  c.innerHTML='';"
-                "  for(const p of ps){"
-                "    const b=document.createElement('button');"
-                "    b.textContent=p.name+(p.current?' [active]':'');"
-                "    b.onclick=()=>doSwitch(p.name);"
-                "    c.appendChild(b);"
-                "  }"
-                "  const r=document.createElement('button');"
-                "  r.textContent='Reset (Idle)';"
-                "  r.style.borderColor='#ef4444';"
-                "  r.onclick=()=>doReset();"
-                "  c.appendChild(r);"
-                "}"
-                "async function doSwitch(name){"
-                "  const r=await (await fetch(API+'/switch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:name})})).json();"
-                "  if(r.status==='switched') showToast('OK '+name+' ('+r.elapsed_sec+'s');"
-                "  else showToast('FAIL '+(r.message||'error'));"
-                "  refresh();"
-                "}"
-                "async function doReset(){"
-                "  const r=await (await fetch(API+'/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:'idle'})})).json();"
-                "  showToast(r.status==='reset'?'Reset OK':'FAIL '+r.message);"
-                "  refresh();"
-                "}"
-                "function showToast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;bottom:24px;right:24px;padding:12px 20px;background:#1a1d27;border:1px solid #22c55e;border-radius:8px;color:#22c55e;font-size:13px';document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}"
-                "refresh();setInterval(refresh,5000);"
-                "</script></body></html>"
-            ).encode('utf-8')
-            body = fallback_html
+                "h1{color:#3b82f6}</style></head><body>"
+                "<h1>EdgeLLM</h1><p>Dashboard unavailable. Use <code>edge-llm status</code></p>"
+                "</body></html>"
+            ).encode("utf-8")
 
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
         self.wfile.write(body)
 
@@ -254,7 +239,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             self._send_json({"error": f"Unknown model: {model}"}, 404)
             return
 
-        # Forward upstream request with proper timeout and streaming
+        # Forward upstream request
         upstream_url = f"http://127.0.0.1:{target_port}{self.path}"
         upstream_req = urllib.request.Request(
             upstream_url,
@@ -264,32 +249,50 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         )
         try:
             upstream_resp = urllib.request.urlopen(upstream_req, timeout=300)
+        except Exception as e:
+            log.error("Forward to :%d failed: %s", target_port, e)
+            self._send_json({"error": str(e)}, 502)
+            return
+
+        try:
             resp_status = upstream_resp.status
             resp_content_type = upstream_resp.headers.get("Content-Type", "text/plain")
 
-            self.send_response(resp_status)
-            self.send_header("Content-Type", resp_content_type)
-            self.send_header("Access-Control-Allow-Origin", "*")
-            if not stream:
-                resp_body = upstream_resp.read()
-                self.send_header("Content-Length", str(len(resp_body)))
-            self.end_headers()
-
             if stream:
+                # Streaming: forward chunk-by-chunk
+                self.send_response(resp_status)
+                self.send_header("Content-Type", resp_content_type)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Transfer-Encoding", "chunked")
+                self.end_headers()
                 chunk_size = 8192
                 while True:
                     chunk = upstream_resp.read(chunk_size)
                     if not chunk:
                         break
+                    self.wfile.write(f"{len(chunk):x}\r\n".encode())
                     self.wfile.write(chunk)
+                    self.wfile.write(b"\r\n")
                     self.wfile.flush()
+                self.wfile.write(b"0\r\n\r\n")
+                self.wfile.flush()
             else:
+                # Non-streaming: read once, send once (BUG FIX: was reading twice)
                 resp_body = upstream_resp.read()
+                self.send_response(resp_status)
+                self.send_header("Content-Type", resp_content_type)
+                self.send_header("Content-Length", str(len(resp_body)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
                 self.wfile.write(resp_body)
+
             upstream_resp.close()
         except Exception as e:
-            log.error("Forward to :%d failed: %s", target_port, e)
-            self._send_json({"error": str(e)}, 502)
+            log.error("Error forwarding response: %s", e)
+            try:
+                self._send_json({"error": str(e)}, 502)
+            except Exception:
+                pass
 
     def _handle_switch(self, pm):
         try:
@@ -334,6 +337,14 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
 
+# ─── Threaded HTTP Server ───────────────────────────────────────
+
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
+    """HTTPServer with thread-per-connection. Solves single-thread blocking."""
+    allow_reuse_address = True
+    daemon_threads = True  # Don't wait for worker threads on shutdown
+
+
 # ─── Main ─────────────────────────────────────────────────────────
 
 def main():
@@ -344,11 +355,7 @@ def main():
 
     mgr = ProxyManager()
 
-    class ProxyServer(http.server.HTTPServer):
-        allow_reuse_address = True
-        proxy_mgr = None  # placeholder, set below
-
-    server = ProxyServer((PROXY_HOST, PROXY_PORT), ProxyHandler)
+    server = ThreadedHTTPServer((PROXY_HOST, PROXY_PORT), ProxyHandler)
     server.proxy_mgr = mgr  # type: ignore
 
     def health_loop():
@@ -376,7 +383,7 @@ def main():
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
 
-    log.info("EdgeLLM Proxy: %s:%d (auto_switch=%s)", PROXY_HOST, PROXY_PORT, AUTO_SWITCH)
+    log.info("EdgeLLM Proxy: %s:%d (auto_switch=%s, threaded)", PROXY_HOST, PROXY_PORT, AUTO_SWITCH)
     log.info("Dashboard: http://%s:%d/", PROXY_HOST, PROXY_PORT)
     log.info("Current profile: %s", mgr.current)
     server.serve_forever()

@@ -167,3 +167,7 @@ def register_with_cli(dispatch):
     dispatch["preload"] = cli_preload
     dispatch["preload_status"] = cli_preload_status
     dispatch["preload_clear"] = cli_preload_clear
+
+# NOTE: preload is experimental and not integrated into the switch flow.
+# It can be activated manually via: edge-llm preload <model>
+# Future: integrate into switch() to pre-load target model weights
