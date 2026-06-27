@@ -1,0 +1,2529 @@
+2026-06-27 23:01:30,856 [edge_llm.proxy] INFO EdgeLLM Proxy: 127.0.0.1:8999 (auto_switch=True)
+2026-06-27 23:01:30,856 [edge_llm.proxy] INFO Dashboard: http://127.0.0.1:8999/
+2026-06-27 23:01:30,856 [edge_llm.proxy] INFO Current profile: idle
+2026-06-27 23:02:04,279 [edge_llm] INFO Switching idle → qw36_full
+2026-06-27 23:02:04,279 [edge_llm] INFO Killing vLLM on :8000
+2026-06-27 23:02:04,343 [edge_llm] INFO Killing vLLM on :8001
+2026-06-27 23:02:04,390 [edge_llm] INFO Killing vLLM on :8002
+2026-06-27 23:02:04,422 [edge_llm] INFO Stopping ComfyUI
+[23:02:04] Stopping ComfyUI
+  Done. GPU free: 31724 MB
+2026-06-27 23:02:09,513 [edge_llm] INFO Starting vLLM: vllm_qwen27b on :8000
+2026-06-27 23:02:09,513 [edge_llm] INFO Starting vLLM cmd: /home/vince/miniconda3/envs/qw36-27b-vllm/bin/vllm serve /home/vince/models/Qwen3.6-27B-Text-NVFP4-MTP --served-model-name vllm_qwen27b --max-model-len 128000 --gpu-memory-utilization...
+2026-06-27 23:02:30,884 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:03:30,912 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:04:30,931 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:05:02,582 [edge_llm] INFO Switch complete in 178.3s
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39332)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39344)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39346)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39360)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39368)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39380)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39386)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self._send_json(pm.mgr.status())
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 273, in _send_json
+    self.wfile.write(body)
+  File "/usr/lib/python3.12/socketserver.py", line 840, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+2026-06-27 23:05:30,974 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:06:31,016 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:07:31,048 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:08:31,088 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:09:31,120 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:10:31,159 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:11:31,187 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:12:31,222 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:13:31,254 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:14:31,273 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:15:31,292 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:16:31,312 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:17:31,333 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:18:31,368 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:19:31,404 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:20:31,423 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:21:31,458 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:22:31,476 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:23:31,514 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:24:31,544 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:25:31,582 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:25:53,972 [edge_llm] INFO Switching qw36_full → idle
+2026-06-27 23:25:53,972 [edge_llm] INFO Killing vLLM on :8000
+2026-06-27 23:25:54,021 [edge_llm] INFO Killing vLLM on :8001
+2026-06-27 23:25:54,068 [edge_llm] INFO Killing vLLM on :8002
+2026-06-27 23:25:54,132 [edge_llm] INFO Stopping ComfyUI
+[23:25:54] Stopping ComfyUI
+  Done. GPU free: 31661 MB
+2026-06-27 23:25:59,254 [edge_llm] INFO Switch complete in 5.3s
+2026-06-27 23:26:04,435 [edge_llm] INFO Switching idle → qw36_full
+2026-06-27 23:26:04,435 [edge_llm] INFO Killing vLLM on :8000
+2026-06-27 23:26:04,500 [edge_llm] INFO Killing vLLM on :8001
+2026-06-27 23:26:04,564 [edge_llm] INFO Killing vLLM on :8002
+2026-06-27 23:26:04,627 [edge_llm] INFO Stopping ComfyUI
+[23:26:04] Stopping ComfyUI
+  Done. GPU free: 31647 MB
+2026-06-27 23:26:09,733 [edge_llm] INFO Starting vLLM: vllm_qwen27b on :8000
+2026-06-27 23:26:09,734 [edge_llm] INFO Starting vLLM cmd: /home/vince/miniconda3/envs/qw36-27b-vllm/bin/vllm serve /home/vince/models/Qwen3.6-27B-Text-NVFP4-MTP --served-model-name vllm_qwen27b --max-model-len 128000 --gpu-memory-utilization...
+2026-06-27 23:26:31,617 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:27:31,647 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:28:31,663 [edge_llm.proxy] ERROR Health check exception: no such table: state
+2026-06-27 23:29:29,778 [edge_llm] ERROR Switch failed
+Traceback (most recent call last):
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 322, in switch
+    actions.append(f"DB says '{db_profile}', but {actual_profile} is running")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 125, in set
+    c = self._conn()
+        ^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47038)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39638)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 39642)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 48964)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 48974)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57078)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57084)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57098)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57104)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57118)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57126)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57130)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57134)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57148)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57152)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57154)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57160)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57166)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57178)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57180)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57186)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+2026-06-27 23:29:31,664 [edge_llm.proxy] ERROR Health check exception: no such table: state
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57202)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57218)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57226)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57240)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32772)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32786)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32796)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32798)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32850)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32862)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32864)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32878)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53780)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53790)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53798)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53816)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47168)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47176)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47182)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47192)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44440)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44452)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44460)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44476)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 46554)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 46560)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 46568)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 46580)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49206)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49232)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+2026-06-27 23:30:31,665 [edge_llm.proxy] ERROR Health check exception: no such table: state
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49246)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49252)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44908)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44928)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44938)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44962)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 45296)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 45318)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 45334)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 45346)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57744)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57766)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57780)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57786)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49798)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49812)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49816)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49822)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43950)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43980)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43986)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 44008)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 59374)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 59388)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+2026-06-27 23:31:31,667 [edge_llm.proxy] ERROR Health check exception: no such table: state
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 59396)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 59412)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54848)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54862)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54876)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54900)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53430)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53448)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53462)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53492)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47426)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 127, in do_GET
+    self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                        ~~~~~~~~~~~~^~~
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 346, in status
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 47454)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 129, in do_GET
+    self.end_headers()
+                       
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 250, in list_profiles
+    self,
+          
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 243, in current_profile
+  File "/home/vince/edge_llm/edge_llm/profile_manager.py", line 116, in get
+    c = self._conn()
+              ^^^^^^^
+sqlite3.OperationalError: no such table: state
+----------------------------------------
+2026-06-27 23:32:22,623 [edge_llm.proxy] INFO Shutting down (signal 15)
+2026-06-27 23:32:29,393 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:32:31,683 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:33:01,036 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:33:14,313 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:33:31,710 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:33:44,172 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:33:58,170 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:34:03,812 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:34:09,697 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:34:13,869 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:34:20,676 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:34:26,501 [edge_llm.proxy] WARNING Forced shutdown — second signal
+Traceback (most recent call last):
+  File "<frozen runpy>", line 189, in _run_module_as_main
+  File "<frozen runpy>", line 159, in _get_module_details
+  File "<frozen importlib._bootstrap_external>", line 1129, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1059, in source_to_code
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/vince/edge_llm/edge_llm/proxy.py", line 250
+    """Forward chat/completions request to upstream vLLM with streaming support."""
+                                                                                ^
+SyntaxError: unterminated triple-quoted string literal (detected at line 403)
+2026-06-27 23:34:31,730 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:34:37,217 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:34:42,856 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:35:18,538 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:35:26,031 [edge_llm.proxy] WARNING Forced shutdown — second signal
+2026-06-27 23:35:34,049 [edge_llm.proxy] INFO EdgeLLM Proxy: 127.0.0.1:8999 (auto_switch=True)
+2026-06-27 23:35:34,049 [edge_llm.proxy] INFO Dashboard: http://127.0.0.1:8999/
+2026-06-27 23:35:34,049 [edge_llm.proxy] INFO Current profile: idle
+2026-06-27 23:36:34,084 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:36:51,466 [edge_llm.proxy] INFO EdgeLLM Proxy: 127.0.0.1:8999 (auto_switch=True)
+2026-06-27 23:36:51,466 [edge_llm.proxy] INFO Dashboard: http://127.0.0.1:8999/
+2026-06-27 23:36:51,466 [edge_llm.proxy] INFO Current profile: idle
+2026-06-27 23:37:51,503 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:38:51,566 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:39:51,618 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:40:51,677 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:41:51,730 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:42:51,769 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:43:51,834 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:44:51,894 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:45:51,927 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:46:51,989 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:47:52,055 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:48:52,111 [edge_llm.proxy] INFO Health check: profile=qw36_full vllm=✅ comfyui=❌
+2026-06-27 23:49:52,173 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:50:52,204 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:51:52,254 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:52:52,303 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:53:52,338 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:54:52,400 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:55:52,462 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:56:52,512 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:57:52,564 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:58:52,624 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-27 23:59:52,683 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-28 00:00:52,719 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-28 00:01:52,771 [edge_llm.proxy] INFO Health check: profile=idle vllm=❌ comfyui=❌
+2026-06-28 00:02:12,558 [edge_llm.proxy] INFO Shutting down (signal 15)
+2026-06-28 00:02:12,724 [edge_llm.proxy] WARNING Forced shutdown — second signal

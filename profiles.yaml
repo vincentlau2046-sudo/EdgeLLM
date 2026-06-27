@@ -1,0 +1,98 @@
+# edge_llm/profiles.yaml
+
+profiles:
+  qw36_full:
+    description: "Qwen3.6-27B 独占模式"
+    gpu_owner: vllm
+    vllm:
+      model_dir: Qwen3.6-27B-Text-NVFP4-MTP
+      served_name: vllm_qwen27b
+      port: 8000
+      conda_env: qw36-27b-vllm
+      max_model_len: 128000
+      gpu_memory_utilization: 0.90
+      max_num_seqs: 4
+      kv_cache_dtype: fp8
+      speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
+      extra_flags: >-
+        --max-num-batched-tokens 8192
+        --language-model-only
+        --enable-prefix-caching
+        --compilation-config '{"cudagraph_mode": "PIECEWISE", "cudagraph_capture_sizes": [1, 2, 4, 8]}'
+        --enable-chunked-prefill
+        --async-scheduling
+        --enable-auto-tool-choice
+        --tool-call-parser qwen3_coder
+        --reasoning-parser qwen3
+        --trust-remote-code
+    comfyui: null
+    switch_cost_sec: 60
+
+  qw35_comfyui:
+    description: "Qwen3.5-9B + ComfyUI 共存模式"
+    gpu_owner: shared
+    vllm:
+      model_dir: Qwen3.5-9B-GPTQ-4bit/Qwen3.5-9B-GPTQ-4bit
+      served_name: vllm_qw35_gptq
+      port: 8002
+      conda_env: qw35-9b-vllm
+      max_model_len: 128000
+      gpu_memory_utilization: 0.4
+      max_num_seqs: 4
+      kv_cache_dtype: fp8
+      extra_flags: >-
+        --max-num-batched-tokens 8192
+        --quantization gptq_marlin
+        --enable-prefix-caching
+        --compilation-config '{"cudagraph_mode": "PIECEWISE", "cudagraph_capture_sizes": [1, 2, 4, 8]}'
+        --enable-chunked-prefill
+        --async-scheduling
+        --enable-auto-tool-choice
+        --tool-call-parser qwen3_coder
+        --reasoning-parser qwen3
+        --trust-remote-code
+    comfyui:
+      startup_script: ~/edge_llm/scripts/switch_comfyui.sh start
+      health_url: http://localhost:8188/system_stats
+      stop_script: ~/edge_llm/scripts/switch_comfyui.sh stop
+    switch_cost_sec: 45
+
+  gemma_full:
+    description: "Gemma4-26B 独占模式"
+    gpu_owner: vllm
+    vllm:
+      model_dir: gemma-4-26b-a4b-nvfp4
+      served_name: vllm_gemma26b_nvfp4
+      port: 8001
+      conda_env: gm4-26b-vllm
+      max_model_len: 128000
+      gpu_memory_utilization: 0.88
+      max_num_seqs: 4
+      kv_cache_dtype: fp8
+      extra_flags: >-
+        --moe-backend marlin
+        --max-num-batched-tokens 8192
+        --enable-prefix-caching
+        --compilation-config '{"cudagraph_mode": "PIECEWISE", "cudagraph_capture_sizes": [1, 2, 4, 8]}'
+        --enable-chunked-prefill
+        --async-scheduling
+        --trust-remote-code
+    comfyui: null
+    switch_cost_sec: 60
+
+  comfyui_only:
+    description: "ComfyUI 独占模式（无 LLM）"
+    gpu_owner: comfyui
+    vllm: null
+    comfyui:
+      startup_script: ~/edge_llm/scripts/switch_comfyui.sh start
+      health_url: http://localhost:8188/system_stats
+      stop_script: ~/edge_llm/scripts/switch_comfyui.sh stop
+    switch_cost_sec: 30
+
+  idle:
+    description: "GPU 空闲"
+    gpu_owner: none
+    vllm: null
+    comfyui: null
+    switch_cost_sec: 0

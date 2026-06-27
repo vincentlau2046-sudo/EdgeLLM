@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+"""
+edge-llm — Local LLM Profile Switcher
+
+Usage:
+  edge-llm status              Show current profile and GPU state
+  edge-llm list                 List all profiles
+  edge-llm switch <profile>    Switch to a profile
+  edge-llm history            Show switch history
+  edge-llm reset [profile]    Reset state and stop services
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from edge_llm.cli import main
+
+if __name__ == "__main__":
+    main()
