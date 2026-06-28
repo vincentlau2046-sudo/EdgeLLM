@@ -259,7 +259,10 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         # Dynamic model lookup
         service_name = pm.model_to_service(model)
         if service_name and AUTO_SWITCH:
-            pm.ensure_service(service_name)
+            switched = pm.ensure_service(service_name)
+            if not switched and service_name not in pm.mgr.active_services:
+                self._send_json({"error": f"Cannot switch to {service_name}: tri-state rule violation or switch in progress"}, 503)
+                return
 
         target_port = pm.get_target_port(model)
         if not target_port:
