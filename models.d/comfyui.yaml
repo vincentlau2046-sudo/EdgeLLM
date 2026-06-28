@@ -1,0 +1,10 @@
+name: comfyui
+description: "ComfyUI 图像生成"
+mode: shared
+type: comfyui
+
+conda_env: comfyui
+port: 8188
+working_dir: ~/ComfyUI
+health_url: http://localhost:8188/system_stats
+extra_flags: --cache-none --enable-manager

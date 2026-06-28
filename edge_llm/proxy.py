@@ -1,26 +1,21 @@
 """
 edge_llm/proxy.py — Robust auto-routing proxy + web dashboard.
 
-v3.2 rewrite — fixes:
-  - shutdown deadlock: handle_request() loop + Event flag (no server.shutdown())
-  - BrokenPipeError: silently caught in all response paths
-  - streaming proxy: robust chunk forwarding with error recovery
-  - systemd watchdog: independent thread, decoupled from health_check
-  - connection reuse: HTTPConnection per upstream, kept alive
+v4.0: Model-plugin architecture. No more Profile concept.
+      Dynamic model lookup from models.d/ via find_model_by_served_name().
 
-Architecture:
-  Main thread: handle_request() loop with select timeout
-  Signal handler: sets shutdown Event (thread-safe)
-  Watchdog thread: sd_notify(WATCHDOG=1) every 20s
-  Health thread: status logging every N seconds
-  Worker threads: per-connection via ThreadingMixIn
+v3.2 fixes preserved:
+  - shutdown deadlock: handle_request() loop + Event flag
+  - BrokenPipeError: silently caught in all response paths
+  - streaming proxy: robust chunk forwarding
+  - systemd watchdog: independent thread
+  - connection reuse: HTTPConnection per upstream
 """
 
 import sys
 import os
 import signal
 import socket
-import select
 import logging
 import json
 import http.server
@@ -31,8 +26,8 @@ from pathlib import Path
 from http.client import HTTPConnection
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from edge_llm.manager import ProfileManager
-from edge_llm.state import ProfileState
+from edge_llm.manager import ModelManager
+from edge_llm.state import GPUMode, ProfileState
 
 log = logging.getLogger("edge_llm.proxy")
 
@@ -42,16 +37,16 @@ PROXY_HOST = os.environ.get("EDGE_PROXY_HOST", "127.0.0.1")
 PROXY_PORT = int(os.environ.get("EDGE_PROXY_PORT", "8999"))
 AUTO_SWITCH = os.environ.get("EDGE_AUTO_SWITCH", "1") == "1"
 HEALTH_CHECK_INTERVAL = int(os.environ.get("EDGE_HEALTH_CHECK", "60"))
-WATCHDOG_INTERVAL = 20  # seconds between sd_notify WATCHDOG=1
+WATCHDOG_INTERVAL = 20
 
 
 # ─── Proxy Manager ──────────────────────────────────────────────
 
 class ProxyManager:
-    """Manages profile switching + request routing."""
+    """Manages model switching + request routing (v4.0: model-plugin)."""
 
     def __init__(self):
-        self.mgr = ProfileManager()
+        self.mgr = ModelManager()
         self._last_switch = 0.0
         self._cooldown = 10
         self._switch_lock = threading.Lock()
@@ -59,18 +54,17 @@ class ProxyManager:
 
     @property
     def current(self) -> str:
-        return self.mgr.current_profile
+        """Current active service or 'idle'."""
+        return self.mgr.current_service
 
-    def model_to_profile(self, model_name: str):
-        model_map = {
-            "vllm_qwen27b": "qw36_full",
-            "vllm_qw35_gptq": "qw35_comfyui",
-            "vllm_gemma26b_nvfp4": "gemma_full",
-        }
-        return model_map.get(model_name)
+    def model_to_service(self, model_name: str):
+        """Map OpenAI served_model_name to model config name. Dynamic lookup."""
+        m = self.mgr.find_model_by_served_name(model_name)
+        return m.name if m else None
 
-    def ensure_profile(self, target: str) -> bool:
-        if self.current == target:
+    def ensure_service(self, target: str) -> bool:
+        """Ensure a model is running, auto-switch if needed."""
+        if target in self.mgr.active_services:
             return True
         if not self._switch_lock.acquire(blocking=False):
             log.warning("Switch already in progress, skipping")
@@ -79,7 +73,7 @@ class ProxyManager:
             if time.time() - self._last_switch < self._cooldown:
                 log.warning("Switch cooldown active, skipping")
                 return False
-            log.info("Auto-switch: %s → %s", self.current, target)
+            log.info("Auto-switch → %s", target)
             result = self.mgr.switch(target)
             self._last_switch = time.time()
             return result["status"] == "switched"
@@ -87,20 +81,18 @@ class ProxyManager:
             self._switch_lock.release()
 
     def get_target_port(self, model_name: str):
-        for name, p in self.mgr._profiles.items():
-            if p.vllm and p.vllm.served_name == model_name:
-                return p.vllm.port
-        return None
+        """Get vLLM port for a served_model_name. Dynamic lookup from models.d/."""
+        m = self.mgr.find_model_by_served_name(model_name)
+        return m.vllm.port if m and m.vllm else None
 
     def get_upstream(self, port: int) -> HTTPConnection:
         """Get or create a keep-alive HTTPConnection to upstream."""
         conn = self._upstream_pool.get(port)
         if conn:
             try:
-                # Test if connection is still usable
                 conn.request("GET", "/health")
                 resp = conn.getresponse()
-                resp.read()  # drain
+                resp.read()
                 if resp.status in (200, 503):
                     return conn
             except Exception:
@@ -117,13 +109,12 @@ class ProxyManager:
     def health_check(self):
         try:
             s = self.mgr.status()
-            log.info("Health check: profile=%s state=%s vllm=%s comfyui=%s",
-                     s["profile"], s.get("state", "?"), s["vllm"], s["comfyui"])
-            p = self.mgr._profiles.get(s["profile"])
-            if p and p.vllm and s["vllm"] == "❌" and s.get("state") == ProfileState.HEALTHY:
-                log.warning("vLLM unhealthy but state=healthy — use `edge-llm reconcile` to fix")
-            if p and p.comfyui and s["comfyui"] == "❌" and s.get("state") == ProfileState.HEALTHY:
-                log.warning("ComfyUI unhealthy but state=healthy — use `edge-llm reconcile` to fix")
+            log.info("Health check: gpu_mode=%s services=%s",
+                     s.get("gpu_mode"), s.get("active_services"))
+            # Check for unhealthy services in healthy state
+            for svc, health in s.get("services_health", {}).items():
+                if health == "❌" and s.get("gpu_mode") != GPUMode.IDLE:
+                    log.warning("%s unhealthy but GPU not idle — use `edge-llm reconcile`", svc)
         except Exception as e:
             log.error("Health check exception: %s", e)
 
@@ -140,22 +131,10 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         return self.server.proxy_mgr
 
     def _safe_write(self, data: bytes):
-        """Write to wfile, silently catching BrokenPipeError."""
         try:
             self.wfile.write(data)
             self.wfile.flush()
-        except BrokenPipeError:
-            log.debug("Client disconnected (BrokenPipe)")
-        except ConnectionResetError:
-            log.debug("Client disconnected (ConnectionReset)")
-        except OSError:
-            pass
-
-    def _safe_close(self):
-        """End headers and flush, silently catching errors."""
-        try:
-            self.wfile.flush()
-        except Exception:
+        except (BrokenPipeError, ConnectionResetError, OSError):
             pass
 
     def do_OPTIONS(self):
@@ -174,18 +153,18 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             if self.path == "/":
                 self._serve_dashboard()
             elif self.path == "/health":
-                self._send_json({"status": "ok", "profile": pm.current})
+                self._send_json({"status": "ok", "gpu_mode": pm.mgr.gpu_mode})
             elif self.path == "/status":
                 self._send_json(pm.mgr.status())
-            elif self.path == "/profiles":
-                self._send_json(pm.mgr.list_profiles())
+            elif self.path in ("/models", "/profiles"):  # /profiles backward compat
+                self._send_json(pm.mgr.list_models())
             elif self.path == "/system":
                 self._send_json(self._system_info())
             elif self.path == "/history":
                 self._send_json(pm.mgr.state.get_history(limit=30))
             else:
                 self._send_json({"error": "not found"}, 404)
-        except BrokenPipeError:
+        except (BrokenPipeError, ConnectionResetError):
             pass
         except Exception as e:
             log.error("GET %s error: %s", self.path, e)
@@ -197,29 +176,26 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_chat(pm)
             elif self.path == "/switch":
                 self._handle_switch(pm)
+            elif self.path == "/stop":
+                self._handle_stop(pm)
             elif self.path == "/reset":
                 self._handle_reset(pm)
             elif self.path == "/reconcile":
                 self._handle_reconcile(pm)
             else:
                 self._send_json({"error": "not found"}, 404)
-        except BrokenPipeError:
+        except (BrokenPipeError, ConnectionResetError):
             pass
         except Exception as e:
             log.error("POST %s error: %s", self.path, e)
 
     def _serve_dashboard(self):
         body = None
-        static_dir = Path(__file__).parent / "static"
-        dashboard = static_dir / "index.html"
-        if dashboard.exists():
-            body = dashboard.read_bytes()
-        if body is None:
-            try:
-                from edge_llm.dashboard import DASHBOARD_HTML
-                body = DASHBOARD_HTML.encode("utf-8")
-            except ImportError:
-                pass
+        try:
+            from edge_llm.dashboard import DASHBOARD_HTML
+            body = DASHBOARD_HTML.encode("utf-8")
+        except ImportError:
+            pass
         if body is None:
             body = (
                 "<!DOCTYPE html><html><head><title>EdgeLLM</title>"
@@ -262,7 +238,6 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         return info
 
     def _read_body(self):
-        """Read request body, return parsed JSON or None on error."""
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             if content_length == 0:
@@ -274,24 +249,23 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             return None
 
     def _handle_chat(self, pm):
-        """Forward chat/completions to upstream vLLM with streaming support."""
         data = self._read_body()
         if data is None:
             return
 
         model = data.get("model", "vllm_qwen27b")
         stream = data.get("stream", False)
-        profile = pm.model_to_profile(model)
 
-        if profile and AUTO_SWITCH:
-            pm.ensure_profile(profile)
+        # Dynamic model lookup
+        service_name = pm.model_to_service(model)
+        if service_name and AUTO_SWITCH:
+            pm.ensure_service(service_name)
 
         target_port = pm.get_target_port(model)
         if not target_port:
             self._send_json({"error": f"Unknown model: {model}"}, 404)
             return
 
-        # Forward using HTTPConnection (connection reuse)
         body = json.dumps(data).encode("utf-8")
         try:
             conn = pm.get_upstream(target_port)
@@ -300,7 +274,6 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             resp = conn.getresponse()
         except Exception as e:
             log.error("Forward to :%d failed: %s", target_port, e)
-            # Discard stale connection
             pm._upstream_pool.pop(target_port, None)
             self._send_json({"error": str(e)}, 502)
             return
@@ -311,14 +284,12 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             resp_ct = resp_headers.get("Content-Type", "text/plain")
 
             if stream:
-                # Streaming: forward chunk-by-chunk
                 self.send_response(resp_status)
                 self.send_header("Content-Type", resp_ct)
                 self.send_header("Access-Control-Allow-Origin", "*")
                 self.send_header("Transfer-Encoding", "chunked")
                 self.send_header("Cache-Control", "no-cache")
                 self.end_headers()
-
                 try:
                     while True:
                         chunk = resp.read(8192)
@@ -332,7 +303,6 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 except Exception as e:
                     log.debug("Stream forwarding interrupted: %s", e)
             else:
-                # Non-streaming: read full body, send once
                 resp_body = resp.read()
                 self.send_response(resp_status)
                 self.send_header("Content-Type", resp_ct)
@@ -341,7 +311,6 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 self.end_headers()
                 self._safe_write(resp_body)
 
-            # Drain remaining response for connection reuse
             try:
                 resp.read()
             except Exception:
@@ -358,20 +327,27 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         data = self._read_body()
         if data is None:
             return
-        target = data.get("profile")
+        target = data.get("model") or data.get("profile")  # accept both
         if not target:
-            self._send_json({"error": "Missing profile"}, 400)
+            self._send_json({"error": "Missing model"}, 400)
             return
         result = pm.mgr.switch(target)
         self._send_json(result)
 
-    def _handle_reset(self, pm):
+    def _handle_stop(self, pm):
         data = self._read_body()
         if data is None:
             return
-        target = data.get("profile", "idle")
-        result = pm.mgr.force_reset(target)
+        target = data.get("model")
+        if not target:
+            self._send_json({"error": "Missing model"}, 400)
+            return
+        result = pm.mgr.stop_service(target)
         self._send_json(result)
+
+    def _handle_reset(self, pm):
+        pm.mgr.force_reset()
+        self._send_json({"status": "reset", "gpu_mode": GPUMode.IDLE})
 
     def _handle_reconcile(self, pm):
         result = pm.mgr.reconcile()
@@ -388,9 +364,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Headers", "Content-Type")
             self.end_headers()
             self._safe_write(body)
-        except BrokenPipeError:
-            pass
-        except Exception:
+        except (BrokenPipeError, ConnectionResetError, OSError):
             pass
 
 
@@ -399,7 +373,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
 class ThreadedHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
-    timeout = 1.0  # for handle_request() to check shutdown flag
+    timeout = 1.0
 
 
 # ─── Main ─────────────────────────────────────────────────────────
@@ -416,7 +390,6 @@ def main():
     server = ThreadedHTTPServer((PROXY_HOST, PROXY_PORT), ProxyHandler)
     server.proxy_mgr = mgr
 
-    # ── systemd notify ─────────────────────────────────────────
     _notify_socket = os.environ.get('NOTIFY_SOCKET')
     _notify_enabled = bool(_notify_socket)
 
@@ -431,7 +404,6 @@ def main():
         except Exception:
             pass
 
-    # ── Signal handler (only sets Event, no deadlock) ──────────
     def handle_signal(signum, frame):
         log.info("Received signal %s, initiating shutdown", signum)
         shutdown_event.set()
@@ -439,7 +411,6 @@ def main():
     signal.signal(signal.SIGINT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
 
-    # ── Watchdog thread (independent of health_check) ──────────
     def watchdog_loop():
         while not shutdown_event.is_set():
             shutdown_event.wait(WATCHDOG_INTERVAL)
@@ -448,9 +419,7 @@ def main():
 
     if _notify_enabled:
         threading.Thread(target=watchdog_loop, daemon=True, name="watchdog").start()
-        log.info("Watchdog thread started (interval=%ds)", WATCHDOG_INTERVAL)
 
-    # ── Health check thread ────────────────────────────────────
     def health_loop():
         while not shutdown_event.is_set():
             shutdown_event.wait(HEALTH_CHECK_INTERVAL)
@@ -459,16 +428,12 @@ def main():
 
     threading.Thread(target=health_loop, daemon=True, name="health").start()
 
-    # ── READY ──────────────────────────────────────────────────
     sd_notify("READY=1")
-    log.info("EdgeLLM Proxy: %s:%d (auto_switch=%s, threaded)", PROXY_HOST, PROXY_PORT, AUTO_SWITCH)
+    log.info("EdgeLLM Proxy: %s:%d (auto_switch=%s, threaded, v4.0)",
+             PROXY_HOST, PROXY_PORT, AUTO_SWITCH)
     log.info("Dashboard: http://%s:%d/", PROXY_HOST, PROXY_PORT)
-    log.info("Current profile: %s", mgr.current)
+    log.info("GPU mode: %s | Services: %s", mgr.mgr.gpu_mode, mgr.mgr.active_services)
 
-    # ── Main loop: handle_request + shutdown check ─────────────
-    # This replaces serve_forever() to avoid the shutdown() deadlock.
-    # handle_request() respects server.timeout (1s), so we check
-    # shutdown_event every second.
     try:
         while not shutdown_event.is_set():
             server.handle_request()
@@ -480,7 +445,6 @@ def main():
             server.server_close()
         except Exception:
             pass
-        # Close upstream connections
         for port, conn in mgr._upstream_pool.items():
             try:
                 conn.close()

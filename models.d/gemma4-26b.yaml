@@ -1,0 +1,21 @@
+name: gemma4-26b
+description: "Gemma4-26B A4B NVFP4"
+mode: exclusive
+
+vllm:
+  model_dir: gemma-4-26b-a4b-nvfp4
+  served_name: vllm_gemma26b_nvfp4
+  port: 8001
+  conda_env: gm4-26b-vllm
+  max_model_len: 128000
+  gpu_memory_utilization: 0.88
+  max_num_seqs: 4
+  kv_cache_dtype: fp8
+  extra_flags: >-
+    --moe-backend marlin
+    --max-num-batched-tokens 8192
+    --enable-prefix-caching
+    --compilation-config '{"cudagraph_mode": "PIECEWISE", "cudagraph_capture_sizes": [1, 2, 4, 8]}'
+    --enable-chunked-prefill
+    --async-scheduling
+    --trust-remote-code

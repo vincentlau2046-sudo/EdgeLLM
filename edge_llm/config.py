@@ -1,7 +1,8 @@
 """
-edge_llm/config.py — Configuration, constants, and profile definitions.
+edge_llm/config.py — Configuration, constants, and model definitions.
 
-Extracted from profile_manager.py (v3.0 → v3.1 refactoring).
+v4.0: Profile concept eliminated. Models are self-describing plugins in models.d/.
+Each YAML file declares its own mode (exclusive/shared) and resource requirements.
 """
 
 from pathlib import Path
@@ -14,13 +15,16 @@ import yaml
 # ─── Path Constants ──────────────────────────────────────────────
 
 BASE_DIR = Path(__file__).parent.parent
-DEFAULT_PROFILES = BASE_DIR / "profiles.yaml"
+MODELS_DIR = BASE_DIR / "models.d"
 DEFAULT_STATE_DB = Path.home() / ".edge_llm" / "state.db"
 DEFAULT_LOG_DIR = Path.home() / ".edge_llm" / "logs"
 GPU_LOCK_PATH = Path("/tmp/edge_llm_gpu.lock")
 MODEL_BASE = Path.home() / "models"
 CONDA_ENVS = Path.home() / "miniconda3" / "envs"
 COMFYUI_DIR = Path.home() / "ComfyUI"
+
+# Legacy (backward compat)
+DEFAULT_PROFILES = BASE_DIR / "profiles.yaml"
 
 
 # ─── Process Management Constants ────────────────────────────────
@@ -93,6 +97,44 @@ class ComfyUIConfig:
 
 
 @dataclass
+class ModelConfig:
+    """A deployable model/service — one per YAML in models.d/.
+
+    Core attributes:
+      name:        Unique identifier (must match YAML filename stem)
+      description: Human-readable description
+      mode:        'exclusive' (GPU fully locked) or 'shared' (coexists with other shared services)
+      type:        'vllm' or 'comfyui'
+      vllm:        VLLMConfig if type='vllm', else None
+      comfyui:     ComfyUIConfig if type='comfyui', else None
+    """
+    name: str
+    description: str
+    mode: str  # 'exclusive' | 'shared'
+    type: str = "vllm"  # 'vllm' | 'comfyui'
+    vllm: Optional[VLLMConfig] = None
+    comfyui: Optional[ComfyUIConfig] = None
+
+    @property
+    def is_exclusive(self) -> bool:
+        return self.mode == "exclusive"
+
+    @property
+    def is_shared(self) -> bool:
+        return self.mode == "shared"
+
+    @property
+    def is_vllm(self) -> bool:
+        return self.type == "vllm" and self.vllm is not None
+
+    @property
+    def is_comfyui(self) -> bool:
+        return self.type == "comfyui" and self.comfyui is not None
+
+
+# ─── Legacy Profile class (backward compat, will be removed in Phase 7) ──
+
+@dataclass
 class Profile:
     name: str
     description: str
@@ -102,10 +144,67 @@ class Profile:
     switch_cost_sec: int = 0
 
 
-# ─── Profile Loading ─────────────────────────────────────────────
+# ─── Model Loading ───────────────────────────────────────────────
+
+def load_models(models_dir: Path = MODELS_DIR) -> dict[str, ModelConfig]:
+    """Load model configs from models.d/ directory.
+
+    Each YAML file defines one model. The 'name' field must match the filename stem.
+    Returns dict keyed by model name.
+    """
+    result: dict[str, ModelConfig] = {}
+    if not models_dir.exists():
+        return result
+
+    for yaml_file in sorted(models_dir.glob("*.yaml")):
+        raw = yaml.safe_load(yaml_file.read_text())
+        model_name = yaml_file.stem
+
+        # Validate name matches filename
+        if raw.get("name") != model_name:
+            raise ValueError(
+                f"Name mismatch in {yaml_file}: YAML name='{raw.get('name')}' "
+                f"vs filename stem='{model_name}'"
+            )
+
+        # Parse type
+        model_type = raw.get("type", "vllm")
+
+        # Parse vllm config if present
+        vllm_cfg = None
+        if raw.get("vllm"):
+            vllm_cfg = VLLMConfig(**raw["vllm"])
+
+        # Parse comfyui config if present
+        comfy_cfg = None
+        if raw.get("comfyui"):
+            comfy_cfg = ComfyUIConfig(**raw["comfyui"])
+
+        # For type=comfyui, parse top-level comfyui fields
+        if model_type == "comfyui" and not comfy_cfg:
+            comfy_fields = {}
+            for f in ("conda_env", "port", "working_dir", "health_url", "extra_flags"):
+                if f in raw:
+                    comfy_fields[f] = raw[f]
+            if comfy_fields:
+                comfy_cfg = ComfyUIConfig(**comfy_fields)
+
+        result[model_name] = ModelConfig(
+            name=model_name,
+            description=raw.get("description", model_name),
+            mode=raw.get("mode", "exclusive"),
+            type=model_type,
+            vllm=vllm_cfg,
+            comfyui=comfy_cfg,
+        )
+
+    return result
+
+
+# ─── Legacy Profile Loading (backward compat, will be removed in Phase 7) ──
 
 def load_profiles(profiles_path: Path) -> dict[str, Profile]:
-    """Load profiles from YAML configuration file."""
+    """Load profiles from YAML configuration file. (Legacy, will be removed.)"""
     raw = yaml.safe_load(profiles_path.read_text())["profiles"]
     result = {}
     for name, cfg in raw.items():

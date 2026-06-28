@@ -1,0 +1,25 @@
+name: qwen36-27b
+description: "Qwen3.6-27B NVFP4 + MTP"
+mode: exclusive
+
+vllm:
+  model_dir: Qwen3.6-27B-Text-NVFP4-MTP
+  served_name: vllm_qwen27b
+  port: 8000
+  conda_env: qw36-27b-vllm
+  max_model_len: 128000
+  gpu_memory_utilization: 0.90
+  max_num_seqs: 4
+  kv_cache_dtype: fp8
+  speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
+  extra_flags: >-
+    --max-num-batched-tokens 8192
+    --language-model-only
+    --enable-prefix-caching
+    --compilation-config '{"cudagraph_mode": "PIECEWISE", "cudagraph_capture_sizes": [1, 2, 4, 8]}'
+    --enable-chunked-prefill
+    --async-scheduling
+    --enable-auto-tool-choice
+    --tool-call-parser qwen3_coder
+    --reasoning-parser qwen3
+    --trust-remote-code

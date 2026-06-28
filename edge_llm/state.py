@@ -1,9 +1,11 @@
 """
 edge_llm/state.py — State machine + SQLite state management.
 
-Extracted from profile_manager.py (v3.0 → v3.1 refactoring).
+v4.0: Added GPUMode (idle/exclusive/shared), validate_transition(),
+      StateDB.get/set_active_services().
 """
 
+import json
 import sqlite3
 import threading
 import logging
@@ -13,10 +15,58 @@ from typing import Optional
 log = logging.getLogger("edge_llm")
 
 
-# ─── State Machine ────────────────────────────────────────────────
+# ─── GPU Mode State Machine ──────────────────────────────────────
+
+class GPUMode:
+    """Valid GPU mode states."""
+    IDLE = "idle"
+    EXCLUSIVE = "exclusive"
+    SHARED = "shared"
+
+    @classmethod
+    def is_valid(cls, mode: str) -> bool:
+        return mode in (cls.IDLE, cls.EXCLUSIVE, cls.SHARED)
+
+
+# Valid transitions: (from_mode, to_mode) → True
+# Invalid transitions → False (must go through idle first)
+_VALID_TRANSITIONS = {
+    # From idle
+    ("idle", "idle"): True,          # no-op
+    ("idle", "exclusive"): True,     # deploy exclusive model
+    ("idle", "shared"): True,        # deploy shared model/service
+    # From exclusive
+    ("exclusive", "idle"): True,     # stop exclusive model
+    ("exclusive", "exclusive"): False, # must idle first
+    ("exclusive", "shared"): False,  # must idle first
+    # From shared
+    ("shared", "idle"): True,        # stop all shared services
+    ("shared", "shared"): True,      # add/remove shared service (hot-plug)
+    ("shared", "exclusive"): False,  # must idle first
+}
+
+
+def validate_transition(from_mode: str, to_mode: str) -> bool:
+    """Check if a GPU mode transition is valid.
+
+    Rules:
+      - idle → exclusive: ✅ deploy exclusive model, GPU fully locked
+      - idle → shared:    ✅ deploy shared service
+      - exclusive → idle: ✅ stop exclusive model
+      - shared → idle:    ✅ stop all shared services
+      - shared → shared:  ✅ add/remove shared service
+      - exclusive → shared: ❌ must idle first
+      - shared → exclusive: ❌ must idle first
+    """
+    result = _VALID_TRANSITIONS.get((from_mode, to_mode))
+    if result is None:
+        log.warning("Unknown GPU mode transition: %s → %s", from_mode, to_mode)
+        return False
+    return result
+
 
 class ProfileState:
-    """Valid profile states for state.db."""
+    """Service health state (kept for backward compat, will rename to ServiceState)."""
     SWITCHING = "switching"
     HEALTHY = "healthy"
     IDLE = "idle"
@@ -62,6 +112,8 @@ class StateDB:
             # Ensure default state keys exist
             c.execute("INSERT OR IGNORE INTO state VALUES ('current_profile', 'idle')")
             c.execute("INSERT OR IGNORE INTO state VALUES ('profile_state', 'idle')")
+            c.execute("INSERT OR IGNORE INTO state VALUES ('gpu_mode', 'idle')")
+            c.execute("INSERT OR IGNORE INTO state VALUES ('active_services', '[]')")
             c.execute("INSERT OR IGNORE INTO state VALUES ('vllm_pid', '')")
             c.execute("INSERT OR IGNORE INTO state VALUES ('comfyui_pid', '')")
             c.commit()
@@ -94,6 +146,49 @@ class StateDB:
                 c.commit()
             finally:
                 c.close()
+
+    # ─── Active Services ────────────────────────────────────────
+
+    def get_active_services(self) -> list[str]:
+        """Get list of currently active service names."""
+        raw = self.get("active_services")
+        if not raw:
+            return []
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, TypeError):
+            return []
+
+    def set_active_services(self, services: list[str]):
+        """Set active services list."""
+        self.set("active_services", json.dumps(services))
+
+    def add_active_service(self, name: str):
+        """Add a service to the active list."""
+        services = self.get_active_services()
+        if name not in services:
+            services.append(name)
+            self.set_active_services(services)
+
+    def remove_active_service(self, name: str):
+        """Remove a service from the active list."""
+        services = self.get_active_services()
+        if name in services:
+            services.remove(name)
+            self.set_active_services(services)
+
+    # ─── GPU Mode ───────────────────────────────────────────────
+
+    @property
+    def gpu_mode(self) -> str:
+        return self.get("gpu_mode") or GPUMode.IDLE
+
+    @gpu_mode.setter
+    def gpu_mode(self, mode: str):
+        assert GPUMode.is_valid(mode), f"Invalid GPU mode: {mode}"
+        self.set("gpu_mode", mode)
+
+    # ─── History ────────────────────────────────────────────────
 
     def add_history(self, from_profile: str, to_profile: str, duration: float, status: str = "ok"):
         with self._lock:

@@ -1,0 +1,24 @@
+name: qwen35-9b
+description: "Qwen3.5-9B GPTQ-4bit"
+mode: shared
+
+vllm:
+  model_dir: Qwen3.5-9B-GPTQ-4bit/Qwen3.5-9B-GPTQ-4bit
+  served_name: vllm_qw35_gptq
+  port: 8002
+  conda_env: qw35-9b-vllm
+  max_model_len: 128000
+  gpu_memory_utilization: 0.4
+  max_num_seqs: 4
+  kv_cache_dtype: fp8
+  extra_flags: >-
+    --max-num-batched-tokens 8192
+    --quantization gptq_marlin
+    --enable-prefix-caching
+    --compilation-config '{"cudagraph_mode": "PIECEWISE", "cudagraph_capture_sizes": [1, 2, 4, 8]}'
+    --enable-chunked-prefill
+    --async-scheduling
+    --enable-auto-tool-choice
+    --tool-call-parser qwen3_coder
+    --reasoning-parser qwen3
+    --trust-remote-code
