@@ -94,6 +94,9 @@ def cmd_switch(args):
     mgr = ModelManager()
 
     if target == "idle":
+        # Record manual stop for all active services
+        for svc in list(mgr.active_services):
+            mgr.state.record_manual_stop(svc)
         print("Switching to idle...")
     else:
         model = mgr.get_model(target)
@@ -103,6 +106,8 @@ def cmd_switch(args):
             for m in mgr.list_models():
                 print(f"  {m['name']:<20} ({m['mode']}, {m['type']})")
             sys.exit(1)
+        # Clear manual stop for target (user explicitly wants it)
+        mgr.state.clear_manual_stop(target)
         print(f"Switching to '{target}' (mode={model.mode})...")
 
     result = mgr.switch(target)
@@ -137,6 +142,7 @@ def cmd_stop(args):
     result = mgr.stop_service(target)
 
     if result["status"] == "stopped":
+        mgr.state.record_manual_stop(target)
         gpu_mode = result.get("gpu_mode", "?")
         print(f"✅ Stopped '{target}' (GPU: {gpu_mode})")
         if result.get("remaining"):
@@ -166,6 +172,9 @@ def cmd_history(args):
 
 def cmd_reset(args):
     mgr = ModelManager()
+    # Record manual stop for all active services
+    for svc in list(mgr.active_services):
+        mgr.state.record_manual_stop(svc)
     print("Force resetting to idle...")
 
     result = mgr.force_reset()

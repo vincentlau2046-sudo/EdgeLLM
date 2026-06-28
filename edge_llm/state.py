@@ -8,6 +8,7 @@ v4.0: Added GPUMode (idle/exclusive/shared), validate_transition(),
 import json
 import sqlite3
 import threading
+import time
 import logging
 from pathlib import Path
 from typing import Optional
@@ -176,6 +177,34 @@ class StateDB:
         if name in services:
             services.remove(name)
             self.set_active_services(services)
+
+    # ─── Manual Stop Protection ────────────────────────────────
+
+    MANUAL_STOP_TTL = 600  # 10 min
+
+    def record_manual_stop(self, name: str):
+        """Record that user manually stopped a model (blocks auto-switch)."""
+        stops = json.loads(self.get("manual_stops") or "{}")
+        stops[name] = time.time()
+        self.set("manual_stops", json.dumps(stops))
+
+    def is_manually_stopped(self, name: str) -> bool:
+        """Check if model was manually stopped within TTL."""
+        stops = json.loads(self.get("manual_stops") or "{}")
+        ts = stops.get(name)
+        if ts is None:
+            return False
+        if time.time() - ts > self.MANUAL_STOP_TTL:
+            del stops[name]
+            self.set("manual_stops", json.dumps(stops))
+            return False
+        return True
+
+    def clear_manual_stop(self, name: str):
+        """Clear manual stop record (e.g. when user explicitly switches TO this model)."""
+        stops = json.loads(self.get("manual_stops") or "{}")
+        stops.pop(name, None)
+        self.set("manual_stops", json.dumps(stops))
 
     # ─── GPU Mode ───────────────────────────────────────────────
 

@@ -66,6 +66,9 @@ class ProxyManager:
         """Ensure a model is running, auto-switch if needed."""
         if target in self.mgr.active_services:
             return True
+        if self.mgr.state.is_manually_stopped(target):
+            log.info("Auto-switch to %s blocked: manually stopped by user", target)
+            return False
         if not self._switch_lock.acquire(blocking=False):
             log.warning("Switch already in progress, skipping")
             return False
@@ -261,7 +264,11 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         if service_name and AUTO_SWITCH:
             switched = pm.ensure_service(service_name)
             if not switched and service_name not in pm.mgr.active_services:
-                self._send_json({"error": f"Cannot switch to {service_name}: tri-state rule violation or switch in progress"}, 503)
+                if pm.mgr.state.is_manually_stopped(service_name):
+                    reason = f"{service_name} was manually stopped — auto-switch blocked for {pm.mgr.state.MANUAL_STOP_TTL}s"
+                else:
+                    reason = f"tri-state rule violation or switch in progress"
+                self._send_json({"error": f"Cannot switch to {reason}"}, 503)
                 return
 
         target_port = pm.get_target_port(model)
@@ -334,6 +341,13 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         if not target:
             self._send_json({"error": "Missing model"}, 400)
             return
+        # Record manual stop for services being replaced
+        if target == "idle":
+            for svc in list(pm.mgr.active_services):
+                pm.mgr.state.record_manual_stop(svc)
+        elif target != "idle":
+            # Clear manual stop for target (user explicitly wants it)
+            pm.mgr.state.clear_manual_stop(target)
         result = pm.mgr.switch(target)
         self._send_json(result)
 
@@ -346,9 +360,13 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             self._send_json({"error": "Missing model"}, 400)
             return
         result = pm.mgr.stop_service(target)
+        if result.get("status") in ("stopped", "already_stopped"):
+            pm.mgr.state.record_manual_stop(target)
         self._send_json(result)
 
     def _handle_reset(self, pm):
+        for svc in list(pm.mgr.active_services):
+            pm.mgr.state.record_manual_stop(svc)
         pm.mgr.force_reset()
         self._send_json({"status": "reset", "gpu_mode": GPUMode.IDLE})
 
