@@ -1,8 +1,8 @@
 """
 edge_llm/dashboard.py — Self-contained web dashboard for EdgeLLM.
 
-v4.1: Apple light-theme redesign. Clean typography, spacious layout,
-      SF-style colors, frosted glass, linear bars.
+v4.2: Apple HIG light-theme. Status bar, side-by-side model panels,
+      proper contrast ratios, clean typography hierarchy.
 """
 
 import json
@@ -18,366 +18,265 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EdgeLLM</title>
 <style>
+/* ── Apple HIG Tokens ── */
 :root {
-  --blue:    #007AFF; --blue-l:  #E8F2FF; --blue-bg: #F0F5FF;
-  --green:   #34C759; --green-l: #E6F9ED; --green-bg:#EDFFF3;
-  --red:     #FF3B30; --red-l:   #FFEAE9; --red-bg:  #FFF5F5;
-  --orange:  #FF9500; --orange-l:#FFF3E0;
-  --purple:  #AF52DE; --purple-l:#F3E8FA;
-  --gray:    #8E8E93; --gray-l:  #F2F2F7; --gray-bg: #F5F5F7;
-  --text:    #1D1D1F; --text2:   #6E6E73; --text3:   #AEAEB2;
-  --white:   #FFFFFF; --border:  #E5E5EA;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.04), 0 2px 6px rgba(0,0,0,.06);
-  --shadow-lg: 0 8px 30px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.04);
-  --radius-sm: 10px; --radius: 14px; --radius-lg: 20px;
+  --blue:    #007AFF; --blue-bg:  #E8F0FE;
+  --green:   #34C759; --green-bg: #E8F8ED;
+  --red:     #FF3B30; --red-bg:   #FEDEDE;
+  --orange:  #FF9500; --orange-bg:#FFF0DB;
+  --purple:  #AF52DE; --purple-bg:#F1E5FA;
+  --teal:    #5AC8FA; --teal-bg:  #E3F5FD;
+  --gray1:   #8E8E93; --gray2:   #AEAEB2; --gray3: #C7C7CC;
+  --gray4:   #D1D1D6; --gray5:   #E5E5EA; --gray6: #F2F2F7;
+  --text1:   #1D1D1F; --text2:   #3C3C43; --text3:  #86868B; --text4: #AEAEB2;
+  --bg:      #F5F5F7; --card:    #FFFFFF;
+  --radius:  12px;
+  --font:    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "SF Pro Text", "Helvetica Neue", sans-serif;
-  background: var(--gray-bg); color: var(--text);
-  padding: 0; min-height:100vh;
-  -webkit-font-smoothing: antialiased;
-  font-size: 14px; line-height: 1.5;
-}
+body { font-family:var(--font); background:var(--bg); color:var(--text1); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.47; }
 
-/* ── Frosted Header ── */
+/* ── Nav ── */
 .nav {
-  position: sticky; top:0; z-index:50;
-  background: rgba(255,255,255,.72);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid rgba(0,0,0,.06);
-  padding: 0 32px;
+  position:sticky; top:0; z-index:50;
+  background:rgba(245,245,247,.82);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--gray5);
 }
-.nav-inner {
-  max-width: 1100px; margin:0 auto;
-  display:flex; align-items:center; justify-content:space-between;
-  height: 52px;
-}
-.nav-l { display:flex; align-items:center; gap:12px; }
-.nav-logo {
-  width:32px; height:32px; border-radius:8px;
-  background: var(--blue);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px; font-weight:700; color:#fff; letter-spacing:-.02em;
-}
-.nav-title { font-size:17px; font-weight:600; letter-spacing:-.01em; }
-.nav-r { display:flex; align-items:center; gap:10px; }
+.nav-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:44px; padding:0 24px; }
+.nav-l { display:flex; align-items:center; gap:10px; }
+.nav-logo { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; }
+.nav-t { font-size:15px; font-weight:600; letter-spacing:-.02em; }
+.nav-r { display:flex; align-items:center; gap:12px; }
+.nav-ver { font-size:11px; color:var(--text4); font-weight:500; }
+.nav-ts  { font-size:11px; color:var(--text3); font-variant-numeric:tabular-nums; }
 
-/* ── Badge / Tag ── */
-.tag {
-  display:inline-flex; align-items:center; gap:5px;
-  padding:3px 12px; border-radius:20px; font-size:12px; font-weight:600;
-  letter-spacing:-.01em; transition:all .25s;
-}
-.tag .dot { width:7px; height:7px; border-radius:50%; }
-.tag.idle      { background:var(--gray-l);   color:var(--gray); }
-.tag.idle .dot      { background:var(--gray); }
-.tag.exclusive      { background:var(--red-l);    color:var(--red); }
-.tag.exclusive .dot      { background:var(--red); }
-.tag.shared   { background:var(--green-l);  color:var(--green); }
-.tag.shared .dot   { background:var(--green); }
-.tag.error     { background:var(--red-l);    color:var(--red); }
-.nav-ver { font-size:12px; color:var(--text3); }
-.nav-time { font-size:12px; color:var(--text2); font-variant-numeric:tabular-nums; }
+/* ── Tag ── */
+.tag { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:9px; font-size:12px; font-weight:600; }
+.tag .dot { width:6px; height:6px; border-radius:50%; }
+.tag.idle { background:var(--gray6); color:var(--gray1); }
+.tag.idle .dot { background:var(--gray1); }
+.tag.exclusive { background:var(--red-bg); color:var(--red); }
+.tag.exclusive .dot { background:var(--red); }
+.tag.shared { background:var(--green-bg); color:var(--green); }
+.tag.shared .dot { background:var(--green); }
 
-/* ── Main Container ── */
-.main { max-width:1100px; margin:0 auto; padding:28px 32px 40px; }
-.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
-.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+/* ── Main ── */
+.main { max-width:960px; margin:0 auto; padding:20px 24px 40px; }
 
-/* ── Card ── */
-.card {
-  background:var(--white); border-radius:var(--radius);
-  border:1px solid var(--border);
-  box-shadow:var(--shadow-sm);
-  padding:20px 22px;
-  transition:box-shadow .2s;
+/* ── Status Strip ── */
+.strip {
+  display:flex; align-items:center; gap:20px;
+  padding:10px 18px; border-radius:var(--radius);
+  background:var(--card); border:.5px solid var(--gray5);
+  margin-bottom:16px;
 }
-.card:hover { box-shadow:var(--shadow-md); }
-.card-hdr {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:14px;
+.strip-item { display:flex; align-items:center; gap:8px; }
+.strip-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--text4); }
+.strip-val { font-size:13px; font-weight:600; color:var(--text1); font-variant-numeric:tabular-nums; }
+.strip-bar { width:80px; height:4px; border-radius:2px; background:var(--gray6); overflow:hidden; }
+.strip-bar-f { height:100%; border-radius:2px; transition:width .6s cubic-bezier(.4,0,.2,1); }
+.strip-sep { width:.5px; height:20px; background:var(--gray5); flex-shrink:0; }
+
+/* ── Section ── */
+.sec { margin-bottom:16px; }
+.sec-title { font-size:13px; font-weight:600; color:var(--text3); margin-bottom:8px; letter-spacing:-.01em; }
+
+/* ── Two-column panels ── */
+.panels { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.panel {
+  background:var(--card); border:.5px solid var(--gray5); border-radius:var(--radius);
+  padding:16px;
 }
-.card-title {
-  font-size:11px; font-weight:600; text-transform:uppercase;
-  letter-spacing:.06em; color:var(--text3);
+.panel-title {
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--text4); margin-bottom:12px;
+  display:flex; align-items:center; gap:6px;
+}
+.panel-title .icon { font-size:13px; }
+
+/* ── Model Item ── */
+.model-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:10px;
+  margin-bottom:4px; cursor:pointer;
+  transition:background .15s;
+  border:.5px solid transparent;
+}
+.model-item:hover { background:var(--gray6); }
+.model-item.active {
+  background:var(--blue-bg); border-color:rgba(0,122,255,.15);
+}
+.model-info { flex:1; min-width:0; }
+.model-name { font-size:14px; font-weight:600; color:var(--text1); letter-spacing:-.01em; }
+.model-desc { font-size:11px; color:var(--text3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.model-badge {
+  padding:2px 8px; border-radius:6px;
+  font-size:10px; font-weight:600; letter-spacing:.02em;
+}
+.model-badge.excl { background:var(--red-bg); color:var(--red); }
+.model-badge.shrd { background:var(--green-bg); color:var(--green); }
+.model-active-dot {
+  width:8px; height:8px; border-radius:50%; background:var(--green);
+  box-shadow:0 0 0 3px rgba(52,199,89,.2); flex-shrink:0;
 }
 
-/* ── Stat Bar Card ── */
-.stat-card { padding:16px 20px; }
-.stat-row { display:flex; align-items:center; gap:14px; }
-.stat-icon {
-  width:42px; height:42px; border-radius:11px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px; flex-shrink:0;
-}
-.stat-icon.gpu  { background:var(--blue-l);  }
-.stat-icon.ram  { background:var(--purple-l); }
-.stat-icon.cpu  { background:var(--orange-l); }
-.stat-body { flex:1; min-width:0; }
-.stat-label { font-size:12px; font-weight:500; color:var(--text2); margin-bottom:6px; }
-.stat-val { font-size:22px; font-weight:700; letter-spacing:-.02em; margin-bottom:8px; line-height:1; }
-.stat-bar {
-  height:4px; border-radius:2px; background:var(--gray-l); overflow:hidden;
-}
-.stat-bar-fill {
-  height:100%; border-radius:2px;
-  transition:width .6s cubic-bezier(.4,0,.2,1), background .3s;
-}
-
-/* ── Status Row Card ── */
-.service-row { display:flex; flex-wrap:wrap; gap:8px; }
-.svc-chip {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:4px 12px; border-radius:16px;
-  font-size:13px; font-weight:500;
-  background:var(--gray-l); color:var(--text2);
-}
-.svc-chip.active { background:var(--green-l); color:var(--green); }
-.svc-chip .chip-dot {
-  width:6px; height:6px; border-radius:50%;
-  background:var(--text3);
-}
-.svc-chip.active .chip-dot { background:var(--green); }
-.svc-placeholder { font-size:13px; color:var(--text3); padding:4px 0; }
-
-/* ── Model Switcher ── */
-.model-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-  gap:10px;
-}
-.model-card {
-  background:var(--white);
-  border:1.5px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:14px 16px; cursor:pointer;
-  transition:all .2s; position:relative;
-  user-select:none;
-}
-.model-card:hover {
-  border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(0,122,255,.08);
-  transform:translateY(-1px);
-}
-.model-card.active {
-  border-color:var(--green);
-  background:var(--green-bg);
-}
-.model-card.active::before {
-  content:''; position:absolute; top:8px; right:8px;
-  width:7px; height:7px; border-radius:50%; background:var(--green);
-  box-shadow:0 0 0 3px rgba(52,199,89,.2);
-}
-.model-card.loading { opacity:.5; pointer-events:none; }
-.model-name {
-  font-size:15px; font-weight:600; margin-bottom:3px;
-  letter-spacing:-.01em;
-}
-.model-desc { font-size:12px; color:var(--text2); line-height:1.4; }
-.model-mode {
-  display:inline-block; margin-top:6px; padding:2px 8px; border-radius:6px;
-  font-size:10px; font-weight:600; letter-spacing:.03em; text-transform:uppercase;
-}
-.model-mode.excl { background:var(--red-l); color:var(--red); }
-.model-mode.shrd { background:var(--green-l); color:var(--green); }
-.model-card.idle-card {
-  border-style:dashed; border-color:var(--text3);
-}
-.model-card.idle-card:hover { border-color:var(--gray); }
-
-/* ── Model Card Actions ── */
-.model-actions {
-  display:flex; gap:6px; margin-top:8px;
-}
-.model-btn {
-  flex:1; padding:6px 0; border:none; border-radius:7px;
-  font-size:12px; font-weight:600; cursor:pointer;
+/* ── Item Actions (shared services) ── */
+.item-actions { display:flex; gap:4px; margin-left:8px; }
+.btn-sm {
+  padding:4px 12px; border:none; border-radius:7px;
+  font-size:11px; font-weight:600; cursor:pointer;
   transition:all .15s; letter-spacing:-.01em;
 }
-.model-btn.start { background:var(--green-l); color:var(--green); }
-.model-btn.start:hover { background:#CEF5D8; }
-.model-btn.stop  { background:var(--red-l); color:var(--red); }
-.model-btn.stop:hover  { background:#FFD6D4; }
-.model-btn.start:disabled, .model-btn.stop:disabled {
-  opacity:.4; cursor:default;
-}
+.btn-sm.start { background:var(--green-bg); color:var(--green); }
+.btn-sm.start:hover { background:#D4F0DD; }
+.btn-sm.start:disabled { opacity:.35; cursor:default; }
+.btn-sm.stop  { background:var(--red-bg); color:var(--red); }
+.btn-sm.stop:hover  { background:#F8CFCF; }
+.btn-sm.stop:disabled  { opacity:.35; cursor:default; }
 
-/* ─── Section Label ── */
-.sec-label {
-  font-size:12px; font-weight:600; text-transform:uppercase;
-  letter-spacing:.06em; color:var(--text3);
-  margin:6px 0 10px;
+/* ── Idle Item ── */
+.idle-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:10px;
+  margin-bottom:4px; cursor:pointer;
+  border:1px dashed var(--gray4);
+  transition:all .15s;
 }
+.idle-item:hover { background:var(--gray6); border-color:var(--gray3); }
+.idle-icon { font-size:16px; }
+.idle-text { font-size:13px; font-weight:500; color:var(--text3); }
 
-/* ── Actions ── */
-.act-row { display:flex; gap:10px; }
+/* ── Action Row ── */
+.act-row { display:flex; gap:8px; margin-bottom:16px; }
 .act-btn {
-  flex:1; padding:11px 16px; border:none; border-radius:var(--radius-sm);
-  font-size:13px; font-weight:600; cursor:pointer;
-  transition:all .15s; letter-spacing:-.01em;
+  padding:8px 16px; border:none; border-radius:8px;
+  font-size:12px; font-weight:600; cursor:pointer;
+  transition:all .12s; letter-spacing:-.01em;
 }
-.act-btn.pri { background:var(--blue); color:#fff; }
-.act-btn.pri:hover { background:#0066D6; }
-.act-btn.sec { background:var(--gray-l); color:var(--text); }
-.act-btn.sec:hover { background:#E5E5EA; }
-.act-btn.warn { background:var(--red-l); color:var(--red); }
-.act-btn.warn:hover { background:#FFD6D4; }
+.act-btn.sec { background:var(--gray6); color:var(--text2); }
+.act-btn.sec:hover { background:var(--gray5); }
+.act-btn.warn { background:var(--red-bg); color:var(--red); }
+.act-btn.warn:hover { background:#F8CFCF; }
 
-/* ── History Table ── */
-.hist-scroll { max-height:260px; overflow-y:auto; }
-.hist-scroll::-webkit-scrollbar { width:6px; }
+/* ── History ── */
+.hist-scroll { max-height:200px; overflow-y:auto; }
+.hist-scroll::-webkit-scrollbar { width:5px; }
 .hist-scroll::-webkit-scrollbar-track { background:transparent; }
-.hist-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-.hist-table { width:100%; border-collapse:collapse; font-size:13px; }
-.hist-table th {
-  text-align:left; padding:8px 12px;
-  font-size:11px; font-weight:600; text-transform:uppercase;
-  letter-spacing:.05em; color:var(--text3); border-bottom:1px solid var(--border);
+.hist-scroll::-webkit-scrollbar-thumb { background:var(--gray4); border-radius:2.5px; }
+.hrow {
+  display:grid; grid-template-columns:60px 1fr 20px 1fr 52px 20px;
+  align-items:center; gap:4px; padding:7px 12px; font-size:12px;
+  border-bottom:.5px solid var(--gray6);
 }
-.hist-table td { padding:9px 12px; border-bottom:1px solid var(--gray-l); }
-.hist-table tr:last-child td { border-bottom:none; }
-.hist-from { color:var(--red); font-weight:500; }
-.hist-to   { color:var(--green); font-weight:500; }
-.hist-dur  { font-variant-numeric:tabular-nums; color:var(--text); font-weight:600; }
-.hist-time { color:var(--text3); font-variant-numeric:tabular-nums; }
-.hist-ok   { color:var(--green); }
-.hist-err  { color:var(--red); }
+.hrow:last-child { border-bottom:none; }
+.hrow-hdr { font-weight:600; color:var(--text4); font-size:10px; text-transform:uppercase; letter-spacing:.04em; border-bottom:none; }
+.h-time { color:var(--text3); font-variant-numeric:tabular-nums; }
+.h-from { color:var(--red); font-weight:600; }
+.h-arrow { color:var(--gray3); text-align:center; }
+.h-to { color:var(--green); font-weight:600; }
+.h-dur { font-variant-numeric:tabular-nums; font-weight:600; color:var(--text1); }
+.h-ok { color:var(--green); }
+.h-err { color:var(--red); }
 
 /* ── Toast ── */
 .toast {
-  position:fixed; bottom:24px; right:24px; z-index:200;
-  padding:12px 20px; border-radius:var(--radius-sm);
-  font-size:14px; font-weight:500;
-  transform:translateY(100px); opacity:0;
-  transition:all .35s cubic-bezier(.4,0,.2,1);
-  box-shadow:var(--shadow-lg);
-  max-width:360px;
+  position:fixed; bottom:20px; right:20px; z-index:200;
+  padding:10px 18px; border-radius:10px;
+  font-size:13px; font-weight:600;
+  transform:translateY(80px); opacity:0;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  max-width:320px;
 }
 .toast.show { transform:translateY(0); opacity:1; }
-.toast.ok    { background:var(--green-l); color:var(--green); border:1px solid var(--green); }
-.toast.err   { background:var(--red-l);  color:var(--red);  border:1px solid var(--red); }
-.toast.info  { background:var(--blue-l); color:var(--blue); border:1px solid var(--blue); }
+.toast.ok   { background:var(--green-bg); color:var(--green); border:1px solid var(--green); }
+.toast.err  { background:var(--red-bg);   color:var(--red);   border:1px solid var(--red); }
+.toast.info { background:var(--blue-bg);  color:var(--blue);  border:1px solid var(--blue); }
 
-@media (max-width:768px) {
-  .grid-2,.grid-3 { grid-template-columns:1fr; }
-  .grid-4 { grid-template-columns:repeat(2,1fr); }
-  .main { padding:20px 16px 32px; }
-  .nav { padding:0 16px; }
-  .model-grid { grid-template-columns:repeat(2,1fr); }
+@media (max-width:700px) {
+  .panels { grid-template-columns:1fr; }
+  .strip { flex-wrap:wrap; gap:12px; }
+  .strip-sep { display:none; }
 }
 </style>
 </head>
 <body>
 
-<!-- Frosted Nav -->
 <div class="nav">
-  <div class="nav-inner">
+  <div class="nav-in">
     <div class="nav-l">
       <div class="nav-logo">E</div>
-      <span class="nav-title">EdgeLLM</span>
+      <span class="nav-t">EdgeLLM</span>
       <span class="tag idle" id="sTag"><span class="dot"></span><span id="sTxt">idle</span></span>
     </div>
     <div class="nav-r">
-      <span class="nav-ver">v4.0</span>
-      <span class="nav-time" id="ts">—</span>
+      <span class="nav-ver">v4.2</span>
+      <span class="nav-ts" id="ts">—</span>
     </div>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- Row 1: 3 stat bars -->
-  <div class="grid-3">
-    <div class="card stat-card">
-      <div class="stat-row">
-        <div class="stat-icon gpu">💾</div>
-        <div class="stat-body">
-          <div class="stat-label">GPU 显存</div>
-          <div class="stat-val" style="color:var(--blue)"><span id="gP">0</span><span style="font-size:13px;color:var(--text3);font-weight:500">%</span></div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="gB" style="width:0%;background:var(--blue)"></div></div>
-          <div style="font-size:12px;color:var(--text3);margin-top:6px"><strong style="color:var(--text)" id="gU">0</strong> / <span id="gT">32,607</span> MB</div>
-        </div>
-      </div>
+  <!-- Status Strip -->
+  <div class="strip">
+    <div class="strip-item">
+      <span class="strip-label">GPU</span>
+      <span class="strip-val" id="gP">0%</span>
+      <div class="strip-bar"><div class="strip-bar-f" id="gB" style="width:0%;background:var(--blue)"></div></div>
     </div>
-
-    <div class="card stat-card">
-      <div class="stat-row">
-        <div class="stat-icon ram">🧠</div>
-        <div class="stat-body">
-          <div class="stat-label">系统内存</div>
-          <div class="stat-val" style="color:var(--purple)"><span id="rP">0</span><span style="font-size:13px;color:var(--text3);font-weight:500">%</span></div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="rB" style="width:0%;background:var(--purple)"></div></div>
-          <div style="font-size:12px;color:var(--text3);margin-top:6px"><strong style="color:var(--text)" id="rU">0</strong> / <span id="rT">—</span> GB</div>
-        </div>
-      </div>
+    <div class="strip-sep"></div>
+    <div class="strip-item">
+      <span class="strip-label">RAM</span>
+      <span class="strip-val" id="rP">0%</span>
+      <div class="strip-bar"><div class="strip-bar-f" id="rB" style="width:0%;background:var(--purple)"></div></div>
     </div>
-
-    <div class="card stat-card">
-      <div class="stat-row">
-        <div class="stat-icon cpu">⚡</div>
-        <div class="stat-body">
-          <div class="stat-label">CPU</div>
-          <div class="stat-val" style="color:var(--orange)"><span id="cP">0</span><span style="font-size:13px;color:var(--text3);font-weight:500">%</span></div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="cB" style="width:0%;background:var(--orange)"></div></div>
-          <div style="font-size:12px;color:var(--text3);margin-top:6px"><span id="cC">—</span> 核心 · 运行 <span id="cU">—</span></div>
-        </div>
-      </div>
+    <div class="strip-sep"></div>
+    <div class="strip-item">
+      <span class="strip-label">CPU</span>
+      <span class="strip-val" id="cP">0%</span>
+      <div class="strip-bar"><div class="strip-bar-f" id="cB" style="width:0%;background:var(--orange)"></div></div>
+    </div>
+    <div class="strip-sep"></div>
+    <div class="strip-item">
+      <span class="strip-label">服务</span>
+      <span class="strip-val" id="svcTxt">—</span>
     </div>
   </div>
 
-  <!-- Row 2: GPU Mode + Active Services -->
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr">
-        <span class="card-title">GPU 模式</span>
-      </div>
-      <div style="font-size:28px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px" id="pN">idle</div>
-      <div style="font-size:14px;color:var(--text2)" id="pD">GPU 空闲</div>
+  <!-- Model Panels: Exclusive | Shared -->
+  <div class="panels">
+    <div class="panel" id="panelExcl">
+      <div class="panel-title"><span class="icon">🔒</span> 独占模型</div>
+      <div id="exclList"></div>
     </div>
-
-    <div class="card">
-      <div class="card-hdr">
-        <span class="card-title">活跃服务</span>
-        <span style="font-size:12px;color:var(--text3)" id="svcCount"></span>
-      </div>
-      <div class="service-row" id="svcRow">
-        <span class="svc-placeholder">—</span>
-      </div>
+    <div class="panel" id="panelShrd">
+      <div class="panel-title"><span class="icon">🔓</span> 共享服务</div>
+      <div id="shrdList"></div>
     </div>
   </div>
 
-  <!-- Row 3: Model Switcher -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-hdr">
-      <span class="card-title">模型管理</span>
-    </div>
-    <div id="swArea"></div>
-  </div>
-
-  <!-- Row 4: Actions -->
-  <div class="act-row" style="margin-bottom:16px">
+  <!-- Actions -->
+  <div class="act-row">
+    <button class="act-btn sec" onclick="doSwitch('idle')">释放 GPU</button>
     <button class="act-btn sec" onclick="doReconcile()">Reconcile</button>
     <button class="act-btn warn" onclick="doReset()">强制重置</button>
   </div>
 
-  <!-- Row 5: History -->
-  <div class="card">
-    <div class="card-hdr">
-      <span class="card-title">切换历史</span>
-    </div>
+  <!-- History -->
+  <div class="panel" style="padding:12px 0 0">
+    <div class="panel-title" style="padding:0 14px"><span class="icon">🕐</span> 切换历史</div>
     <div class="hist-scroll">
-      <table class="hist-table">
-        <thead><tr><th>时间</th><th>来源</th><th>目标</th><th>耗时</th><th></th></tr></thead>
-        <tbody id="hBody"><tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">加载中…</td></tr></tbody>
-      </table>
+      <div class="hrow hrow-hdr">
+        <span>时间</span><span>来源</span><span></span><span>目标</span><span>耗时</span><span></span>
+      </div>
+      <div id="hBody"><div style="text-align:center;padding:16px;color:var(--text4);font-size:12px">加载中…</div></div>
     </div>
   </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -385,92 +284,61 @@ body {
 <script>
 let sw = false;
 
-function toast(m, type) {
+function toast(m, t) {
   const e = document.getElementById('toast');
-  e.textContent = m; e.className = 'toast ' + type + ' show';
-  clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), 2800);
+  e.textContent = m; e.className = 'toast ' + t + ' show';
+  clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), 2500);
 }
 
 async function j(p, o) {
   const r = await fetch(p, o);
-  if (!r.ok && r.status !== 503) throw new Error(r.statusText);
   return r.json();
-}
-
-function barColor(id, pct) {
-  const el = document.getElementById(id);
-  if (id === 'gB') {
-    el.style.background = pct < 50 ? 'var(--blue)' : pct < 80 ? 'var(--orange)' : 'var(--red)';
-  }
 }
 
 async function load() {
   const [s, sys, hist] = await Promise.all([
-    j('/status'), j('/system').catch(() => ({})), j('/history').catch(() => [])
+    j('/status'), j('/system').catch(()=>({})), j('/history').catch(()=>[])
   ]);
 
-  // Nav tag
   const gm = s.gpu_mode || 'idle';
-  const labels = { idle:'idle', exclusive:'exclusive', shared:'shared' };
+  const labels = {idle:'idle', exclusive:'exclusive', shared:'shared'};
+
+  // Nav tag
   const tag = document.getElementById('sTag');
   tag.className = 'tag ' + gm;
   document.getElementById('sTxt').textContent = labels[gm] || gm;
 
-  // GPU mode text
-  const desc = { idle:'GPU 空闲', exclusive:'独占模式', shared:'共享模式' };
-  document.getElementById('pN').textContent = labels[gm] || gm;
-  document.getElementById('pD').textContent = desc[gm] || '';
+  // Strip — GPU
+  const gt=s.gpu_total_mb||32607, gu=s.gpu_used_mb||0, gp=(gu/gt*100);
+  document.getElementById('gP').textContent = gp.toFixed(1)+'%';
+  document.getElementById('gB').style.width = gp.toFixed(1)+'%';
+  document.getElementById('gB').style.background = gp<50?'var(--blue)':gp<80?'var(--orange)':'var(--red)';
 
-  // Services
-  const svcs = s.active_services || [];
-  const health = s.services_health || {};
-  const svcRow = document.getElementById('svcRow');
-  document.getElementById('svcCount').textContent = svcs.length > 0 ? svcs.length + ' 个活跃' : '';
-  if (svcs.length === 0) {
-    svcRow.innerHTML = '<span class="svc-placeholder">无活跃服务</span>';
-  } else {
-    svcRow.innerHTML = svcs.map(n => {
-      const h = health[n] || '❌';
-      const cls = h === '✅' ? 'svc-chip active' : 'svc-chip';
-      const dot = h === '✅' ? '<span class="chip-dot"></span>' : '';
-      return '<span class="' + cls + '">' + dot + n + '</span>';
-    }).join('');
-  }
+  // Strip — RAM
+  const rt=sys.ram_total_gb||1, ru=sys.ram_used_gb||0, rp=(ru/rt*100);
+  document.getElementById('rP').textContent = rp.toFixed(1)+'%';
+  document.getElementById('rB').style.width = rp.toFixed(1)+'%';
 
-  // GPU bar
-  const gt = s.gpu_total_mb || 32607, gu = s.gpu_used_mb || 0, gp = (gu/gt*100);
-  document.getElementById('gP').textContent = gp.toFixed(1);
-  document.getElementById('gU').textContent = gu.toLocaleString();
-  document.getElementById('gT').textContent = gt.toLocaleString();
-  document.getElementById('gB').style.width = gp.toFixed(1) + '%';
-  barColor('gB', gp);
+  // Strip — CPU
+  const cp=sys.cpu_percent||0;
+  document.getElementById('cP').textContent = cp.toFixed(1)+'%';
+  document.getElementById('cB').style.width = cp.toFixed(1)+'%';
 
-  // RAM bar
-  const rt = sys.ram_total_gb || 1, ru = sys.ram_used_gb || 0, rp = (ru/rt*100);
-  document.getElementById('rP').textContent = rp.toFixed(1);
-  document.getElementById('rU').textContent = ru.toFixed(1);
-  document.getElementById('rT').textContent = rt.toFixed(1);
-  document.getElementById('rB').style.width = rp.toFixed(1) + '%';
+  // Strip — Services
+  const svcs = s.active_services||[];
+  document.getElementById('svcTxt').textContent = svcs.length ? svcs.join(', ') : '—';
 
-  // CPU bar
-  const cp = sys.cpu_percent || 0;
-  document.getElementById('cP').textContent = cp.toFixed(1);
-  document.getElementById('cC').textContent = sys.cpu_cores || '—';
-  document.getElementById('cB').style.width = cp.toFixed(1) + '%';
-  const us = sys.uptime_seconds || 0;
-  document.getElementById('cU').textContent = Math.floor(us/3600)+'h '+Math.floor((us%3600)/60)+'m';
-
-  // History table
+  // History
   const hBody = document.getElementById('hBody');
-  if (!hist || hist.length === 0) {
-    hBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">暂无记录</td></tr>';
+  if (!hist||!hist.length) {
+    hBody.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text4);font-size:12px">暂无记录</div>';
   } else {
-    hBody.innerHTML = hist.slice(0,15).map(h => {
-      const t = h.timestamp ? new Date(h.timestamp) : new Date();
+    hBody.innerHTML = hist.slice(0,12).map(h => {
+      const t = h.timestamp?new Date(h.timestamp):new Date();
       const ts = t.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      const d = h.duration != null ? h.duration.toFixed(1)+'s' : '—';
-      const st = h.status==='ok' ? '<span class="hist-ok">✓</span>' : '<span class="hist-err">✗</span>';
-      return '<tr><td class="hist-time">'+ts+'</td><td class="hist-from">'+(h.from||'—')+'</td><td class="hist-to">'+h.to+'</td><td class="hist-dur">'+d+'</td><td>'+st+'</td></tr>';
+      const d = h.duration!=null?h.duration.toFixed(1)+'s':'—';
+      const st = h.status==='ok'?'<span class="h-ok">✓</span>':'<span class="h-err">✗</span>';
+      return '<div class="hrow"><span class="h-time">'+ts+'</span><span class="h-from">'+(h.from||'—')+'</span><span class="h-arrow">→</span><span class="h-to">'+h.to+'</span><span class="h-dur">'+d+'</span><span>'+st+'</span></div>';
     }).join('');
   }
 
@@ -479,81 +347,59 @@ async function load() {
 
 async function loadModels() {
   const models = await j('/models');
-  const area = document.getElementById('swArea');
+  const excl = models.filter(m=>m.mode==='exclusive');
+  const shrd = models.filter(m=>m.mode==='shared');
 
-  const exclusive = models.filter(m => m.mode==='exclusive');
-  const shared = models.filter(m => m.mode==='shared');
-
-  let html = '';
-
-  // Idle
-  html += '<div class="sec-label">释放</div>';
-  html += '<div class="model-grid">';
-  html += '<div class="model-card idle-card" id="sw-idle" onclick="doSwitch(\'idle\')">';
-  html += '<div class="model-name" style="color:var(--text2)">⚪ idle</div>';
-  html += '<div class="model-desc">释放 GPU，停止所有服务</div>';
-  html += '</div>';
-  html += '</div>';
-
-  // Exclusive
-  if (exclusive.length) {
-    html += '<div class="sec-label" style="margin-top:14px">独占模型</div>';
-    html += '<div class="model-grid">';
-    for (const m of exclusive) {
-      const a = m.active;
-      html += '<div class="model-card'+(a?' active':'')+'" id="sw-'+m.name+'" onclick="doSwitch(\''+m.name+'\')">';
-      html += '<div class="model-name">'+m.name+'</div>';
-      html += '<div class="model-desc">'+(m.description||'')+'</div>';
-      html += '<span class="model-mode excl">独占</span>';
-      html += '</div>';
-    }
-    html += '</div>';
+  // Exclusive panel
+  const eList = document.getElementById('exclList');
+  let eh = '';
+  for (const m of excl) {
+    const a = m.active;
+    eh += '<div class="model-item'+(a?' active':'')+'" id="sw-'+m.name+'" onclick="doSwitch(\''+m.name+'\')">';
+    if (a) eh += '<div class="model-active-dot"></div>';
+    eh += '<div class="model-info"><div class="model-name">'+m.name+'</div><div class="model-desc">'+(m.description||'')+'</div></div>';
+    eh += '<span class="model-badge excl">独占</span>';
+    eh += '</div>';
   }
+  eList.innerHTML = eh;
 
-  // Shared
-  if (shared.length) {
-    html += '<div class="sec-label" style="margin-top:14px">共享服务</div>';
-    html += '<div class="model-grid">';
-    for (const m of shared) {
-      const a = m.active;
-      html += '<div class="model-card'+(a?' active':'')+'" id="sw-'+m.name+'">';
-      html += '<div class="model-name">'+m.name+'</div>';
-      html += '<div class="model-desc">'+(m.description||'')+'</div>';
-      html += '<span class="model-mode shrd">共享</span>';
-      html += '<div class="model-actions">';
-      html += '<button class="model-btn stop"'+(a?'':' disabled')+' onclick="doStop(\''+m.name+'\')">停止</button>';
-      html += '<button class="model-btn start"'+(a?' disabled':'')+' onclick="doSwitch(\''+m.name+'\')">启动</button>';
-      html += '</div>';
-      html += '</div>';
-    }
-    html += '</div>';
+  // Shared panel
+  const sList = document.getElementById('shrdList');
+  let sh = '';
+  for (const m of shrd) {
+    const a = m.active;
+    sh += '<div class="model-item'+(a?' active':'')+'" id="sw-'+m.name+'">';
+    if (a) sh += '<div class="model-active-dot"></div>';
+    sh += '<div class="model-info"><div class="model-name">'+m.name+'</div><div class="model-desc">'+(m.description||'')+'</div></div>';
+    sh += '<span class="model-badge shrd">共享</span>';
+    sh += '<div class="item-actions">';
+    sh += '<button class="btn-sm stop"'+(a?'':' disabled')+' onclick="event.stopPropagation();doStop(\''+m.name+'\')">停止</button>';
+    sh += '<button class="btn-sm start"'+(a?' disabled':'')+' onclick="event.stopPropagation();doSwitch(\''+m.name+'\')">启动</button>';
+    sh += '</div>';
+    sh += '</div>';
   }
-
-  area.innerHTML = html;
+  sList.innerHTML = sh;
 }
 
 async function doSwitch(n) {
-  if (sw) return;
-  sw = true;
+  if (sw) return; sw = true;
   try {
     const r = await j('/switch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:n})});
-    if (r.status==='switched')      toast(n+' ✓  '+r.elapsed_sec+'s','ok');
+    if (r.status==='switched') toast(n+' ✓ '+r.elapsed_sec+'s','ok');
     else if (r.status==='already_active') toast('已在 '+n,'info');
-    else                             toast(r.message||'失败','err');
+    else toast(r.message||'失败','err');
   } catch(e) { toast(e.message,'err'); }
   sw = false;
-  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('loading'));
   await Promise.all([load(),loadModels()]);
 }
 
 async function doStop(n) {
-  if (sw) return;
-  sw = true;
+  if (sw) return; sw = true;
   try {
     const r = await j('/stop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:n})});
-    if (r.status==='stopped')          toast(n+' 已停止','ok');
-    else if (r.status==='already_stopped') toast(n+' 未在运行','info');
-    else                               toast(r.message||'停止失败','err');
+    if (r.status==='stopped') toast(n+' 已停止','ok');
+    else if (r.status==='already_stopped') toast(n+' 未运行','info');
+    else toast(r.message||'停止失败','err');
   } catch(e) { toast(e.message,'err'); }
   sw = false;
   await Promise.all([load(),loadModels()]);
@@ -562,7 +408,7 @@ async function doStop(n) {
 async function doReset() {
   if (!confirm('强制重置到 idle？')) return;
   const r = await j('/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-  toast(r.status==='reset'?'已重置 ✓':'失败','ok');
+  toast(r.status==='reset'?'已重置 ✓':'失败', r.status==='reset'?'ok':'err');
   await Promise.all([load(),loadModels()]);
 }
 
