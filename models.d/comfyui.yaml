@@ -7,4 +7,4 @@ conda_env: comfyui
 port: 8188
 working_dir: ~/ComfyUI
 health_url: http://localhost:8188/system_stats
-extra_flags: --cache-none --enable-manager
+extra_flags: --cache-none --enable-manager  --use-sage-attention
