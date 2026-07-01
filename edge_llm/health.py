@@ -101,8 +101,8 @@ def wait_http(url: str, timeout: int = 300) -> bool:
                 consecutive_non_503_errors = 0
             else:
                 consecutive_non_503_errors += 1
-                if consecutive_non_503_errors >= 10:
-                    log.error("HTTP %d from %s 10 times consecutively — giving up", e.code, url)
+                if consecutive_non_503_errors >= 3:
+                    log.error("HTTP %d from %s 3 times consecutively — giving up", e.code, url)
                     return False
         except Exception:
             consecutive_non_503_errors = 0

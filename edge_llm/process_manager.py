@@ -121,16 +121,15 @@ class ProcessManager:
                 start_new_session=True,
             )
         except Exception as e:
-            log_fh.close()
             log.error("Failed to start vLLM: %s", e)
             return {"status": "error", "message": f"Popen failed: {e}"}
+        finally:
+            log_fh.close()
 
         pgid = proc.pid  # With start_new_session, PID == PGID
         self._set_vllm_pid(pgid)
         pid_file.write_text(str(pgid))
         log.info("vLLM started: PID=%d (PGID=%d)", proc.pid, pgid)
-
-        log_fh.close()
 
         # Check if process died immediately
         for _ in range(VLLM_STARTUP_CHECK_ROUNDS):
@@ -290,17 +289,16 @@ class ProcessManager:
                 cwd=str(cfg.resolved_working_dir),
             )
         except Exception as e:
-            log_fh.close()
             log.error("Failed to start ComfyUI: %s", e)
             return {"status": "error", "message": f"Popen failed: {e}"}
+        finally:
+            log_fh.close()
 
         pgid = proc.pid  # start_new_session → PID == PGID
         self._set_comfyui_pid(pgid)
         pid_file = self._log_dir / "comfyui.pid"
         pid_file.write_text(str(pgid))
         log.info("ComfyUI started: PID=%d (PGID=%d)", proc.pid, pgid)
-
-        log_fh.close()
 
         # Quick check for immediate failure
         for _ in range(6):  # 3 seconds

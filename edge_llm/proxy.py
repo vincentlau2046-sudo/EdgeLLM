@@ -717,6 +717,13 @@ def main():
         level=logging.INFO,
         format="%(asctime)s [%(name)s] %(levelname)s %(message)s",
     )
+    # Rotating file handler for persistent logs
+    log_dir = DEFAULT_LOG_DIR
+    log_dir.mkdir(parents=True, exist_ok=True)
+    from logging.handlers import RotatingFileHandler
+    fh = RotatingFileHandler(log_dir / "proxy.log", maxBytes=10_000_000, backupCount=3)
+    fh.setFormatter(logging.Formatter("%(asctime)s [%(name)s] %(levelname)s %(message)s"))
+    logging.getLogger("edge_llm").addHandler(fh)
 
     mgr = ProxyManager()
     shutdown_event = threading.Event()
