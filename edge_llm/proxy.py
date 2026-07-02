@@ -237,6 +237,8 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 self._send_json(pm.mgr.status())
             elif self.path in ("/models", "/profiles"):  # /profiles backward compat
                 self._send_json(pm.mgr.list_models())
+            elif self.path == "/local-models":
+                self._send_json(pm.mgr.discover_local_models())
             elif self.path == "/v1/models":
                 self._handle_v1_models(pm)
             elif self.path == "/system":
@@ -271,6 +273,8 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_reset(pm)
             elif path == "/reconcile":
                 self._handle_reconcile(pm)
+            elif path == "/deploy":
+                self._handle_deploy(pm)
             else:
                 self._send_json({"error": "not found"}, 404)
         except (BrokenPipeError, ConnectionResetError):
@@ -714,6 +718,20 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
 
     def _handle_reconcile(self, pm):
         result = pm.mgr.reconcile()
+        self._send_json(result)
+
+    def _handle_deploy(self, pm):
+        data = self._read_body()
+        if data is None:
+            return
+        name = data.get("name")
+        model_type = data.get("type", "vllm")
+        if not name:
+            self._send_json({"error": "Missing name"}, 400)
+            return
+        result = pm.mgr.auto_deploy(name, model_type)
+        if result.get("status") in ("switched", "already_active"):
+            pm.reset_cum()
         self._send_json(result)
 
     def _send_json(self, data, status=200):

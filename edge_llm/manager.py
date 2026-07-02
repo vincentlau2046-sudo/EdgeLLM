@@ -872,6 +872,115 @@ class ModelManager:
 
     # ── Internal Helpers ─────────────────────────────────────────
 
+    def discover_local_models(self) -> dict:
+        """Scan ~/models/ and ~/ComfyUI/models/ for unconfigured model directories."""
+        discovered = []
+        configured = sorted(self._models.keys())
+        configured_dirs = set()
+
+        # Build set of known model directories from configured YAMLs
+        for m in self._models.values():
+            if m.is_vllm and m.vllm.model_dir:
+                configured_dirs.add(m.vllm.model_dir)
+
+        models_base = Path.home() / "models"
+        if models_base.exists():
+            for d in sorted(models_base.iterdir()):
+                if not d.is_dir() or d.name.startswith("."):
+                    continue
+                if d.name in configured_dirs:
+                    continue
+                config_json = d / "config.json"
+                safetensors = list(d.glob("*.safetensors"))
+                gguf_files = list(d.glob("*.gguf"))
+                if config_json.exists():
+                    try:
+                        size_mb = sum(f.stat().st_size for f in d.rglob("*") if f.is_file()) // (1024*1024)
+                    except Exception:
+                        size_mb = 0
+                    discovered.append({
+                        "name": d.name, "path": str(d),
+                        "type": "vllm", "size_mb": size_mb,
+                        "files": [f.name for f in sorted(d.iterdir()) if f.is_file()][:20],
+                    })
+                elif gguf_files:
+                    size_mb = sum(f.stat().st_size for f in gguf_files) // (1024*1024)
+                    discovered.append({
+                        "name": d.name, "path": str(d),
+                        "type": "ollama_cpp_gguf", "size_mb": size_mb,
+                        "files": [f.name for f in gguf_files],
+                    })
+
+        comfyui_models = Path.home() / "ComfyUI" / "models"
+        if comfyui_models.exists():
+            for sub in ["checkpoints", "loras", "diffusion_models", "vae", "ipadapter"]:
+                subdir = comfyui_models / sub
+                if not subdir.exists():
+                    continue
+                for f in sorted(subdir.glob("*.safetensors")):
+                    name = f.stem
+                    size_mb = f.stat().st_size // (1024*1024)
+                    discovered.append({
+                        "name": name, "path": str(f),
+                        "type": f"comfyui_{sub.rstrip('s')}", "size_mb": size_mb,
+                        "files": [f.name],
+                    })
+
+        return {"discovered": discovered, "configured": configured}
+
+    def auto_deploy(self, name: str, model_type: str) -> dict:
+        """Auto-generate YAML and deploy a discovered model."""
+        models_dir = self.models_dir
+        yaml_path = models_dir / f"{name}.yaml"
+        if yaml_path.exists():
+            return {"status": "error", "message": f"YAML already exists: {yaml_path}"}
+
+        # Find next available port
+        used_ports = set()
+        for m in self._models.values():
+            if m.port:
+                used_ports.add(m.port)
+
+        if model_type == "vllm":
+            port = max([p for p in used_ports if p >= 8000] + [7999]) + 1
+            yaml_content = f"""name: {name}
+description: "{name} (auto-deployed)"
+type: vllm
+mode: shared
+vllm:
+  model_dir: {name}
+  served_name: {name}
+  port: {port}
+  conda_env: qw36-27b-vllm
+  gpu_memory_utilization: 0.83
+  max_model_len: 131072
+  max_num_seqs: 4
+  kv_cache_dtype: auto
+"""
+        elif model_type.startswith("ollama_cpp"):
+            port = max([p for p in used_ports if p >= 11435] + [11434]) + 1
+            yaml_content = f"""name: {name}
+description: "{name} (auto-deployed, ollama.cpp)"
+type: ollama_cpp
+mode: shared
+cpu_only: true
+ollama_cpp:
+  model_path: ~/models/{name}/
+  port: {port}
+  threads: 16
+  context_size: 16384
+  gpu_layers: 0
+"""
+        else:
+            return {"status": "error", "message": f"Unsupported type for auto-deploy: {model_type}"}
+
+        yaml_path.write_text(yaml_content)
+        log.info("Auto-generated YAML: %s", yaml_path)
+
+        self._models = load_models(self.models_dir)
+        result = self.switch(name)
+        return result
+
     def _check_model_health(self, model: ModelConfig) -> bool:
         """Check if a specific model's service is healthy."""
         if model.is_vllm:

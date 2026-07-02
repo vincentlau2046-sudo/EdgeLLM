@@ -421,6 +421,12 @@ body {
   <!-- Active Services -->
   <div class="panel" id="svcCard" style="margin-bottom:18px;padding:16px 20px;min-height:40px"></div>
 
+  <!-- Discovered Local Models -->
+  <div class="panel" id="localModels" style="margin-bottom:18px;padding:16px 20px;display:none">
+    <div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:12px">📦 本地未配置模型</div>
+    <div id="localModelsList"></div>
+  </div>
+
   <!-- Model Panels -->
   <div class="panels">
     <div class="panel">
@@ -674,14 +680,29 @@ async function loadModels() {
 async function doRelease(n,isExcl) {
   if(!swLock())return;
   try{
-    const r=isExcl
-      ? await j('/switch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'idle'})})
-      : await j('/stop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:n})});
-    if(r.status==='switched'||r.status==='stopped') toast(n+' 已释放','ok');
-    else toast(r.message||'失败','err');
+    // P0-3: For shared models, stop then check if idle needed
+    if(isExcl) {
+      const r = await j('/switch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'idle'})});
+      if(r.status==='switched') toast(n+' 已释放','ok');
+      else toast(r.message||'失败','err');
+    } else {
+      const r = await j('/stop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:n})});
+      if(r.status==='stopped') {
+        // P0-3: Check if we should transition to idle
+        const status = await j('/status');
+        if(status.active_services && status.active_services.length === 0) {
+          await j('/switch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'idle'})});
+          toast(n+' 已释放 → idle','ok');
+        } else {
+          toast(n+' 已释放','ok');
+        }
+      } else {
+        toast(r.message||'失败','err');
+      }
+    }
   }catch(e){toast(e.message,'err');}
   finally{sw=false;}
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
 }
 
 async function doSleep(n) {
@@ -693,7 +714,7 @@ async function doSleep(n) {
     else toast(r.message||'失败','err');
   }catch(e){toast(e.message,'err');}
   finally{sw=false;}
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
 }
 
 async function doWake(n) {
@@ -705,7 +726,7 @@ async function doWake(n) {
     else toast(r.message||'失败','err');
   }catch(e){toast(e.message,'err');}
   finally{sw=false;}
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
 }
 
 async function doSwitch(n) {
@@ -713,11 +734,12 @@ async function doSwitch(n) {
   try{
     const r=await j('/switch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:n})});
     if(r.status==='switched') toast(n+' ✓ '+r.elapsed_sec+'s','ok');
+    else if(r.status==='config_changed_restart') toast('配置已变更，'+n+' 正在重启','ok');
     else if(r.status==='already_active') toast('已在 '+n,'info');
     else toast(r.message||'失败','err');
   }catch(e){toast(e.message,'err');}
   finally{sw=false;}
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
 }
 
 async function doStop(n) {
@@ -729,25 +751,63 @@ async function doStop(n) {
     else toast(r.message||'停止失败','err');
   }catch(e){toast(e.message,'err');}
   finally{sw=false;}
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
+}
+
+async function loadLocalModels() {
+  try {
+    const d = await j('/local-models');
+    const list = d.discovered || [];
+    const el = document.getElementById('localModels');
+    const listEl = document.getElementById('localModelsList');
+    if (list.length === 0) {
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'block';
+    let html = '';
+    for (const m of list) {
+      const gb = m.size_mb >= 1024 ? (m.size_mb/1024).toFixed(1)+' GB' : m.size_mb+' MB';
+      html += '<div class="model-card" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+      html += '<div><div class="model-name" style="font-size:14px">'+m.name+'</div>';
+      html += '<div style="font-size:11px;color:var(--text3);margin-top:2px">'+m.path+' · '+gb+' · '+m.type+'</div></div>';
+      html += '<button class="btn-card start" onclick="event.stopPropagation();doDeploy(\''+m.name+'\',\''+m.type+'\')">Deploy</button>';
+      html += '</div>';
+    }
+    listEl.innerHTML = html;
+  } catch(e) { /* ignore */ }
+}
+
+async function doDeploy(name, type) {
+  if (!swLock()) return;
+  try {
+    const r = await j('/deploy', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:name,type:type})});
+    if (r.status === 'switched' || r.status === 'already_active') {
+      toast(name+' 已部署 ✓', 'ok');
+    } else {
+      toast(r.message || '部署失败', 'err');
+    }
+  } catch(e) { toast(e.message, 'err'); }
+  finally { sw = false; }
+  await Promise.all([load(), loadModels(), loadLocalModels()]);
 }
 
 async function doReset() {
   if(!confirm('强制重置到 idle？'))return;
   const r=await j('/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
   toast(r.status==='reset'?'已重置 ✓':'失败',r.status==='reset'?'ok':'err');
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
 }
 
 async function doReconcile() {
   const r=await j('/reconcile',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
   const a=r.actions||[];
   toast(a.length===0?'状态一致 ✓':'修复: '+a.join('; '),'ok');
-  await Promise.all([load(),loadModels()]);
+  await Promise.all([load(),loadModels(),loadLocalModels()]);
 }
 
-Promise.all([load(),loadModels()]);
-setInterval(()=>{load();loadModels();},5000);
+Promise.all([load(),loadModels(),loadLocalModels()]);
+setInterval(()=>{load();loadModels();loadLocalModels();},5000);
 </script>
 </body>
 </html>"""
