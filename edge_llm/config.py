@@ -348,6 +348,20 @@ def load_models(models_dir: Path = MODELS_DIR) -> dict[str, ModelConfig]:
     return result
 
 
+# ─── Model Aliases ─────────────────────────────────────────────
+
+def load_aliases(models_dir: Path = MODELS_DIR) -> dict[str, str]:
+    """Load model aliases from models.d/aliases.yaml.
+    Returns dict of alias_name → concrete_model_name."""
+    alias_file = models_dir / "aliases.yaml"
+    if not alias_file.exists():
+        return {}
+    raw = yaml.safe_load(alias_file.read_text())
+    if not raw or "aliases" not in raw:
+        return {}
+    return {k: v for k, v in raw["aliases"].items() if isinstance(v, str)}
+
+
 # ─── Legacy Profile Loading (backward compat, will be removed in Phase 7) ──
 
 def load_profiles(profiles_path: Path) -> dict[str, Profile]:

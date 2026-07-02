@@ -28,6 +28,7 @@ from http.client import HTTPConnection
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from edge_llm.manager import ModelManager
 from edge_llm.state import GPUMode, ProfileState
+from edge_llm.config import load_aliases
 
 log = logging.getLogger("edge_llm.proxy")
 
@@ -47,12 +48,15 @@ class ProxyManager:
 
     def __init__(self):
         self.mgr = ModelManager()
+        self._aliases = load_aliases()
         self._last_switch = 0.0
         self._cooldown = 10
         self._switch_lock = threading.Lock()
         self._upstream_pool: dict[int, HTTPConnection] = {}
         self._pool_lock = threading.Lock()
         self._cum = self._make_cum()
+        if self._aliases:
+            log.info("Loaded %d model aliases: %s", len(self._aliases), list(self._aliases.keys()))
 
     @staticmethod
     def _make_cum():
@@ -71,9 +75,20 @@ class ProxyManager:
         return self.mgr.current_service
 
     def model_to_service(self, model_name: str):
-        """Map OpenAI served_model_name to model config name. Dynamic lookup."""
-        m = self.mgr.find_model_by_served_name(model_name)
-        return m.name if m else None
+        """Map served_model_name to model config name. Resolves aliases first."""
+        # Step 1: resolve aliases (fast → llama3-8b)
+        resolved = self._aliases.get(model_name, model_name)
+        # Step 2: find by served_name
+        m = self.mgr.find_model_by_served_name(resolved)
+        if m:
+            log.debug("model_to_service: %s → %s (served=%s)", model_name, resolved, m.name)
+            return m.name
+        # Step 3: fallback — also try original name
+        if resolved != model_name:
+            m2 = self.mgr.find_model_by_served_name(model_name)
+            if m2:
+                return m2.name
+        return None
 
     def _wait_healthy(self, target: str, timeout: float = 180) -> bool:
         """Wait for a model to become healthy after switch. Works across all backend types."""

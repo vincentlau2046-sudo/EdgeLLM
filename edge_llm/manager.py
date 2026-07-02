@@ -85,7 +85,7 @@ class ModelManager:
         return self._models.get(name)
 
     def list_models(self) -> list[dict]:
-        """List all available models from models.d/."""
+        """List all available models from models.d/. Skips alias_map entries."""
         return [
             {
                 "name": m.name,
@@ -95,6 +95,7 @@ class ModelManager:
                 "active": m.name in self.active_services,
             }
             for m in self._models.values()
+            if m.type != "alias_map"
         ]
 
     def find_model_by_served_name(self, served_name: str) -> Optional[ModelConfig]:
