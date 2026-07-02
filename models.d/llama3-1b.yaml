@@ -1,0 +1,8 @@
+name: llama3-1b
+description: "Llama 3.2 1B Instruct (Ollama)"
+type: ollama
+mode: shared
+cpu_only: false
+ollama:
+  model_ref: "llama3.2:1b"
+  keep_alive: "5m"

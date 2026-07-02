@@ -7,7 +7,7 @@ vllm:
   served_name: vllm_gemma26b_nvfp4
   port: 8001
   conda_env: gm4-26b-vllm
-  max_model_len: 128000
+  max_model_len: 131072
   gpu_memory_utilization: 0.88
   max_num_seqs: 4
   kv_cache_dtype: fp8

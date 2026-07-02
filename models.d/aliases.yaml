@@ -1,10 +1,10 @@
 name: aliases
-description: "Model aliases — abstract roles mapped to concrete models"
+description: "Model aliases"
 type: alias_map
 
 aliases:
-  fast: llama3-8b
+  fast: llama3-1b
   powerful: qwen36-27b
-  cheap: phi3-mini
+  cheap: llama3-1b
   code: qwen36-27b
   balanced: qwen35-9b

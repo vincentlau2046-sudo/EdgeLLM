@@ -1,13 +1,14 @@
 name: qwen35-9b
 description: "Qwen3.5-9B GPTQ-4bit"
 mode: shared
+typical_vram_pct: 38
 
 vllm:
   model_dir: Qwen3.5-9B-GPTQ-4bit/Qwen3.5-9B-GPTQ-4bit
   served_name: vllm_qw35_gptq
   port: 8002
   conda_env: qw35-9b-vllm
-  max_model_len: 128000
+  max_model_len: 131072
   gpu_memory_utilization: 0.40
   max_num_seqs: 4
   kv_cache_dtype: fp8

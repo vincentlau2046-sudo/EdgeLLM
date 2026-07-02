@@ -2,10 +2,11 @@ name: comfyui
 description: "ComfyUI 图像生成"
 mode: shared
 type: comfyui
+typical_vram_pct: 50
 
 conda_env: comfyui
 port: 8188
 working_dir: ~/ComfyUI
 health_url: http://localhost:8188/system_stats
 health_check_timeout: 180
-extra_flags: --cache-none --enable-manager  --use-sage-attention
+extra_flags: --cache-none --enable-manager
